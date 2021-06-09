@@ -1,4 +1,4 @@
-**:croissant:  Service: {{name}}**
+**:croissant:  Service: "{{name}}"**
 
 **:rice_ball: Description**
 > {{description}}
