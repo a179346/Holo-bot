@@ -7,11 +7,11 @@ class TypeormConnection {
   public async init () {
     this.my_connection = await createConnection({
       type: 'mysql',
-      host: config.DB.host,
-      port: config.DB.port,
-      username: config.DB.username,
-      password: config.DB.password,
-      database: config.DB.database,
+      host: config.DB.HOST,
+      port: config.DB.PORT,
+      username: config.DB.USERNAME,
+      password: config.DB.PASSWORD,
+      database: config.DB.DATABASE,
       entities: [ path.resolve(__dirname, '../entity/*') ],
       synchronize: true,
     });

@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED='0' nodemon src/index.ts",
     "build": "rm -rf dist/ && tsc",
     "lint": "eslint . --ext .js,.ts",
     "lint-fix": "eslint --fix . --ext .js,.ts"
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/a179346/Holo-bot#readme",
   "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.32"
