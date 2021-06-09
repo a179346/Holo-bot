@@ -4,7 +4,7 @@ import { TypeOrmConnection } from './utils/typeorm-connection';
 import { Lib } from './lib/common';
 import { config } from './system/config';
 import { Bot } from './bot';
-import { serviceSet } from './serviceSet';
+import { HoloBotServiceSet } from './HoloBotServiceSet';
 
 const NAMESPACE = 'Index';
 start();
@@ -18,7 +18,7 @@ async function start () {
     logging.info(NAMESPACE, 'db successfully connected.');
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
-    const bot = new Bot([ serviceSet ]);
+    const bot = new Bot([ HoloBotServiceSet ]);
     bot.init();
     bot.login(config.DISCORD_BOT.TOKEN);
   } catch (error) {

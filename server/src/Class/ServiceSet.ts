@@ -4,13 +4,12 @@ import { Service } from './Service';
 export class ServiceSet {
   public prefix: string;
   public services: Service[] = [];
-  private description: string;
-  private helpMessage: string;
+  public description: string;
+  private helpMessage = '';
 
   constructor (prefix: string, description: string) {
     this.prefix = prefix;
     this.description = description;
-    this.helpMessage = '';
   }
 
   addService (service: Service) {
@@ -21,7 +20,7 @@ export class ServiceSet {
     if (this.helpMessage)
       return this.helpMessage;
 
-    const template = await readFile(__dirname + '/../ServiceSetHelp.md');
+    const template = await readFile(__dirname + '/ServiceSetHelp.md');
     let servicesMsg = '';
     for (const service of this.services) {
       servicesMsg += `${('`' + service.name + '`:').padEnd(15)}${service.description}\n`;

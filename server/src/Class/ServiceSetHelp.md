@@ -2,7 +2,7 @@
 
 **:comet: Usage**
 ```
-{{prefix}} SERVICE COMMAND [ARGS]
+{{prefix}} SERVICE COMMAND [OPTIONS]
 ```
 **:comet: Services**
 {{services}}

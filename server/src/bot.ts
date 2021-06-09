@@ -20,20 +20,40 @@ class Bot extends Client {
     this.on('message', async (msg) => {
       try {
         const messages = msg.content.match(/[^ ]+/g);
-        if (!messages) return;
+        if (!messages || messages.length === 0) return;
 
-        const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.prefix === messages[0]);
+        const prefix = messages[0];
+        const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.prefix === prefix);
         if (!serviceSet) return;
 
-        if (messages[1] === 'help') {
+        const serviceName = messages[1];
+        if (!serviceName) {
+          msg.reply(`\nHi! I'm ${serviceSet.description}\nRun \`${serviceSet.prefix} help\` for more information.`);
+          return;
+        }
+
+        if (serviceName === 'help') {
           const helpMessage = await serviceSet.getHelpMessage();
           msg.channel.send(helpMessage);
           return;
         }
+
+        const service = serviceSet.services.find((service) => service.name === serviceName);
+        if (!service) {
+          msg.reply(`\nUnknown service: "${serviceName}"\nRun \`${serviceSet.prefix} help\` for more information.`);
+          return;
+        }
+        await service.runEvent(msg, serviceSet, messages);
       } catch (error) {
         //
       }
     });
+  }
+
+  public async sendMessageToChannel (channelId: string, message: string) {
+    const channel = this.channels.cache.get(channelId);
+    if (channel?.isText())
+      await channel.send(message);
   }
 }
 
