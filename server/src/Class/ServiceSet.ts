@@ -1,10 +1,11 @@
+import { Message } from 'discord.js';
 import { readFile } from 'fs/promises';
 import { Service } from './Service';
 
 export class ServiceSet {
   public prefix: string;
-  public services: Service[] = [];
-  public description: string;
+  private services: Service[] = [];
+  private description: string;
   private helpMessage = '';
 
   constructor (prefix: string, description: string) {
@@ -36,7 +37,28 @@ export class ServiceSet {
       .replace(/{{services}}/g, servicesMsg);
   }
 
-  public getHelpMessage (): string {
+  private getHelpMessage (): string {
     return this.helpMessage;
+  }
+
+  public async runEvent (msg: Message, messages: string[]) {
+    const serviceName = messages[1];
+    if (!serviceName) {
+      msg.reply(`\nHi! I'm ${this.description}\nRun \`${this.prefix} help\` for more information.`);
+      return;
+    }
+
+    if (serviceName === 'help') {
+      const helpMessage = this.getHelpMessage();
+      msg.channel.send(helpMessage);
+      return;
+    }
+
+    const service = this.services.find((service) => service.name === serviceName);
+    if (!service) {
+      msg.reply(`\nUnknown service: "${serviceName}"\nRun \`${this.prefix} help\` for more information.`);
+      return;
+    }
+    await service.runEvent(msg, this, messages);
   }
 }

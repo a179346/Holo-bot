@@ -27,24 +27,7 @@ class Bot {
         const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.prefix === prefix);
         if (!serviceSet) return;
 
-        const serviceName = messages[1];
-        if (!serviceName) {
-          msg.reply(`\nHi! I'm ${serviceSet.description}\nRun \`${serviceSet.prefix} help\` for more information.`);
-          return;
-        }
-
-        if (serviceName === 'help') {
-          const helpMessage = serviceSet.getHelpMessage();
-          msg.channel.send(helpMessage);
-          return;
-        }
-
-        const service = serviceSet.services.find((service) => service.name === serviceName);
-        if (!service) {
-          msg.reply(`\nUnknown service: "${serviceName}"\nRun \`${serviceSet.prefix} help\` for more information.`);
-          return;
-        }
-        await service.runEvent(msg, serviceSet, messages);
+        await serviceSet.runEvent(msg, messages);
       } catch (error) {
         //
       }
