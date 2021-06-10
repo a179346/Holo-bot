@@ -21,8 +21,7 @@ async function start () {
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
     const bot = new Bot([ HoloBotServiceSet ]);
-    bot.init();
-    bot.login(config.DISCORD_BOT.TOKEN);
+    await bot.init(config.DISCORD_BOT.TOKEN);
   } catch (error) {
     logging.error(NAMESPACE, (error as Error).message, error);
   }

@@ -4,20 +4,21 @@ import { logging } from './utils/logging';
 
 const NAMESPACE = 'BOT';
 
-class Bot extends Client {
+class Bot {
   private serviceSets: ServiceSet[];
+  private client: Client;
 
   constructor (serviceSets: ServiceSet[]) {
-    super();
+    this.client = new Client();
     this.serviceSets = serviceSets;
   }
 
-  public init () {
-    this.on('ready', () => {
-      logging.info(NAMESPACE, `Logged in to discord as ${this.user?.tag}!`);
+  public async init (discordToken: string) {
+    this.client.on('ready', () => {
+      logging.info(NAMESPACE, `Logged in to discord as ${this.client.user?.tag}!`);
     });
 
-    this.on('message', async (msg) => {
+    this.client.on('message', async (msg) => {
       try {
         const messages = msg.content.match(/[^ ]+/g);
         if (!messages || messages.length === 0) return;
@@ -48,10 +49,12 @@ class Bot extends Client {
         //
       }
     });
+
+    await this.client.login(discordToken);
   }
 
   public async sendMessageToChannel (channelId: string, message: string) {
-    const channel = this.channels.cache.get(channelId);
+    const channel = this.client.channels.cache.get(channelId);
     if (channel?.isText())
       await channel.send(message);
   }
