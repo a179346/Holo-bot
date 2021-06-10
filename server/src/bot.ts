@@ -33,7 +33,7 @@ class Bot extends Client {
         }
 
         if (serviceName === 'help') {
-          const helpMessage = await serviceSet.getHelpMessage();
+          const helpMessage = serviceSet.getHelpMessage();
           msg.channel.send(helpMessage);
           return;
         }

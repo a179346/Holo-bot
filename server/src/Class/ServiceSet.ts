@@ -12,14 +12,18 @@ export class ServiceSet {
     this.description = description;
   }
 
-  addService (service: Service) {
+  public addService (service: Service) {
     this.services.push(service);
   }
 
-  async getHelpMessage (): Promise<string> {
-    if (this.helpMessage)
-      return this.helpMessage;
+  public async init () {
+    await this.resetHelpMessage();
+    for (const service of this.services) {
+      await service.init();
+    }
+  }
 
+  private async resetHelpMessage () {
     const template = await readFile(__dirname + '/ServiceSetHelp.md');
     let servicesMsg = '';
     for (const service of this.services) {
@@ -30,7 +34,9 @@ export class ServiceSet {
       .replace(/{{description}}/g, this.description)
       .replace(/{{prefix}}/g, this.prefix)
       .replace(/{{services}}/g, servicesMsg);
+  }
 
+  public getHelpMessage (): string {
     return this.helpMessage;
   }
 }

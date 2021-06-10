@@ -14,14 +14,14 @@ export class Service {
     this.description = description;
   }
 
-  addCommand (command: Command) {
+  public addCommand (command: Command) {
     this.commands.push(command);
   }
 
-  async runEvent (msg: Message, serviceSet: ServiceSet, messages: string[]) {
+  public async runEvent (msg: Message, serviceSet: ServiceSet, messages: string[]) {
     const commandName = messages[2];
     if (!commandName || commandName === 'help') {
-      const helpMessage = await this.getHelpMessage(serviceSet);
+      const helpMessage = this.getHelpMessage(serviceSet);
       msg.channel.send(helpMessage);
       return;
     }
@@ -35,11 +35,11 @@ export class Service {
     await command.commandEvent(msg, serviceSet, messages);
   }
 
-  async getHelpMessage (serviceSet: ServiceSet): Promise<string> {
-    if (this.helpMessage)
-      return this.helpMessage
-        .replace(/{{prefix}}/g, serviceSet.prefix);
+  public async init () {
+    await this.resetHelpMessage();
+  }
 
+  private async resetHelpMessage () {
     const template = await readFile(__dirname + '/ServiceHelp.md');
     let commandMsg = '';
     for (const command of this.commands) {
@@ -50,7 +50,9 @@ export class Service {
       .replace(/{{name}}/g, this.name)
       .replace(/{{description}}/g, this.description)
       .replace(/{{commands}}/g, commandMsg);
+  }
 
+  private getHelpMessage (serviceSet: ServiceSet): string {
     return this.helpMessage
       .replace(/{{prefix}}/g, serviceSet.prefix);
   }

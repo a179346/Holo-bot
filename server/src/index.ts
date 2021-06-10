@@ -15,7 +15,9 @@ async function start () {
       logging.info(NAMESPACE, 'connecting to db ...');
       await TypeOrmConnection.init();
     }, 3, 3000);
-    logging.info(NAMESPACE, 'db successfully connected.');
+
+    logging.info(NAMESPACE, 'init HoloBot ServiceSet');
+    await HoloBotServiceSet.init();
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
     const bot = new Bot([ HoloBotServiceSet ]);
