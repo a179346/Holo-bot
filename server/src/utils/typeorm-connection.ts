@@ -12,8 +12,8 @@ class TypeormConnection {
       username: config.DB.USERNAME,
       password: config.DB.PASSWORD,
       database: config.DB.DATABASE,
-      entities: [ path.resolve(__dirname, '../entity/*') ],
-      synchronize: true,
+      entities: [ path.resolve(__dirname, '../entity/*.{js,ts}') ],
+      synchronize: false,
     });
   }
 
