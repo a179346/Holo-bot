@@ -8,7 +8,9 @@
     "dev": "NODE_TLS_REJECT_UNAUTHORIZED='0' nodemon src/index.ts",
     "build": "rm -rf dist/ && tsc",
     "lint": "eslint . --ext .js,.ts",
-    "lint-fix": "eslint --fix . --ext .js,.ts"
+    "lint-fix": "eslint --fix . --ext .js,.ts",
+    "migration-generate": "ts-node ./node_modules/.bin/typeorm migration:generate -n $NAME",
+    "migration-run": "ts-node ./node_modules/.bin/typeorm migration:run"
   },
   "repository": {
     "type": "git",
