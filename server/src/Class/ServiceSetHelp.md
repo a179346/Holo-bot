@@ -1,12 +1,12 @@
 **{{description}}**
 
-**:comet: Usage**
+**:comet:  Usage**
 ```
 {{prefix}} SERVICE COMMAND [OPTIONS]
 ```
-**:comet: Services**
+**:comet:  Services**
 {{services}}
-**:comet: More information**
+**:comet:  More information**
 ```
 {{prefix}} SERVICE help
 ```

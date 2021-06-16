@@ -6,12 +6,14 @@ import { ServiceSet } from './ServiceSet';
 export class Service {
   public name: string;
   public description: string;
+  private exampleCommand;
   public commands: Command[] = [];
   private helpMessage = '';
 
-  constructor (name: string, description: string) {
+  constructor (name: string, description: string, exampleCommand: string) {
     this.name = name;
     this.description = description;
+    this.exampleCommand = exampleCommand;
   }
 
   public addCommand (command: Command) {
@@ -44,12 +46,16 @@ export class Service {
     let commandMsg = '';
     for (const command of this.commands) {
       commandMsg += `${('`' + command.name + '`:').padEnd(15)}${command.description}\n`;
+      for (const commandoption of command.commandOptions) {
+        commandMsg += `          -  \`[${commandoption.argNames.join(' , ')}]\`  :  [${commandoption.required ? 'required' : 'optional'}]  ${commandoption.description}\n`;
+      }
     }
 
     this.helpMessage = template.toString()
       .replace(/{{name}}/g, this.name)
       .replace(/{{description}}/g, this.description)
-      .replace(/{{commands}}/g, commandMsg);
+      .replace(/{{commands}}/g, commandMsg)
+      .replace(/{{exampleCommand}}/g, this.exampleCommand);
   }
 
   private getHelpMessage (serviceSet: ServiceSet): string {
