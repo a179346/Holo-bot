@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { readFile } from 'fs/promises';
+import { ReplyError } from './ReplyError';
 import { Service } from './Service';
 
 export class ServiceSet {
@@ -43,10 +44,8 @@ export class ServiceSet {
 
   public async runEvent (msg: Message, messages: string[]) {
     const serviceName = messages[1];
-    if (!serviceName) {
-      msg.reply(`\nHi! I'm ${this.description}\nRun \`${this.prefix} help\` for more information.`);
-      return;
-    }
+    if (!serviceName)
+      throw new ReplyError(`\nHi! I'm ${this.description}\nRun \`${this.prefix} help\` for more information.`);
 
     if (serviceName === 'help') {
       const helpMessage = this.getHelpMessage();
@@ -55,10 +54,9 @@ export class ServiceSet {
     }
 
     const service = this.services.find((service) => service.name === serviceName);
-    if (!service) {
-      msg.reply(`\nUnknown service: "${serviceName}"\nRun \`${this.prefix} help\` for more information.`);
-      return;
-    }
+    if (!service)
+      throw new ReplyError(`\nUnknown service: "${serviceName}"\nRun \`${this.prefix} help\` for more information.`);
+
     await service.runEvent(msg, this, messages);
   }
 }

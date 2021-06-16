@@ -1,4 +1,5 @@
 import { Client } from 'discord.js';
+import { ReplyError } from './Class/ReplyError';
 import { ServiceSet } from './Class/ServiceSet';
 import { logging } from './utils/logging';
 
@@ -29,7 +30,8 @@ class Bot {
 
         await serviceSet.runEvent(msg, messages);
       } catch (error) {
-        //
+        if (error instanceof ReplyError)
+          msg.reply(error.message);
       }
     });
 

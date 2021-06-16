@@ -2,6 +2,7 @@ import { readFile } from 'fs/promises';
 import { Message } from 'discord.js';
 import { Command } from './Command';
 import { ServiceSet } from './ServiceSet';
+import { ReplyError } from './ReplyError';
 
 export class Service {
   public name: string;
@@ -29,12 +30,11 @@ export class Service {
     }
 
     const command = this.commands.find((command) => command.name === commandName);
-    if (!command) {
-      msg.reply(`\nUnknown command: "${commandName}"\nRun \`${serviceSet.prefix} ${this.name} help\` for more information.`);
-      return;
-    }
+    if (!command)
+      throw new ReplyError(`\nUnknown command: "${commandName}"\nRun \`${serviceSet.prefix} ${this.name} help\` for more information.`);
 
-    await command.commandEvent(msg, serviceSet, messages);
+
+    await command.runEvent(msg, serviceSet, messages);
   }
 
   public async init () {

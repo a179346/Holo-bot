@@ -1,7 +1,8 @@
 import { Command } from '../Class/Command';
+import { ReplyError } from '../Class/ReplyError';
 
 const SubListCommand = new Command('list', 'List current subscriptions.', async (msg, serviceSet, messages) => {
-  msg.reply('service not yet implemented.');
+  throw new ReplyError('service not yet implemented.');
 });
 
 export {
