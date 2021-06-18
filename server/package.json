@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "NODE_TLS_REJECT_UNAUTHORIZED='0' nodemon src/index.ts",
-    "build": "rm -rf dist/ && tsc",
+    "build": "rm -rf dist/ && tsc && cp -r src/nonTsFiles/ dist/nonTsFiles/",
     "lint": "eslint . --ext .js,.ts",
     "lint-fix": "eslint --fix . --ext .js,.ts",
     "migration-generate": "ts-node ./node_modules/.bin/typeorm migration:generate -n $NAME",

@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { readFile } from 'fs/promises';
 import { ReplyError } from './ReplyError';
 import { Service } from './Service';
+import * as path from 'path';
 
 export class ServiceSet {
   public prefix: string;
@@ -35,7 +36,8 @@ export class ServiceSet {
   }
 
   private async resetHelpMessage () {
-    const template = await readFile(__dirname + '/ServiceSetHelp.md');
+    const filePath = path.resolve(__dirname, '../nonTsFiles/ServiceSetHelp.md');
+    const template = await readFile(filePath);
     let servicesMsg = '';
     for (const service of this.services) {
       servicesMsg += `${('`' + service.name + '`:').padEnd(15)}${service.description}\n`;

@@ -3,6 +3,7 @@ import { Message } from 'discord.js';
 import { Command } from './Command';
 import { ServiceSet } from './ServiceSet';
 import { ReplyError } from './ReplyError';
+import * as path from 'path';
 
 export class Service {
   public name: string;
@@ -42,7 +43,8 @@ export class Service {
   }
 
   private async resetHelpMessage () {
-    const template = await readFile(__dirname + '/ServiceHelp.md');
+    const filePath = path.resolve(__dirname, '../nonTsFiles/ServiceHelp.md');
+    const template = await readFile(filePath);
     let commandMsg = '';
     for (const command of this.commands) {
       commandMsg += `${('`' + command.name + '`:').padEnd(15)}${command.description}\n`;
