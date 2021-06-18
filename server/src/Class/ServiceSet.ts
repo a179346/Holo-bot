@@ -14,6 +14,15 @@ export class ServiceSet {
     this.description = description;
   }
 
+  public checkContent (content: string) {
+    const prefixLength = this.prefix.length;
+    for (let i = 0; i < prefixLength; i++) {
+      if (content.charAt(i) !== this.prefix.charAt(i))
+        return false;
+    }
+    return true;
+  }
+
   public addService (service: Service) {
     this.services.push(service);
   }

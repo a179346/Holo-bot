@@ -21,12 +21,12 @@ class Bot {
 
     this.client.on('message', async (msg) => {
       try {
-        const messages = msg.content.match(/[^ ]+/g);
-        if (!messages || messages.length === 0) return;
-
-        const prefix = messages[0];
-        const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.prefix === prefix);
+        const content = msg.content;
+        const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.checkContent(content));
         if (!serviceSet) return;
+
+        const messages = content.match(/[^ ]+/g);
+        if (!messages || messages.length === 0) return;
 
         await serviceSet.runEvent(msg, messages);
       } catch (error) {
