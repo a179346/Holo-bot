@@ -32,6 +32,8 @@ class Bot {
       } catch (error) {
         if (error instanceof ReplyError)
           msg.reply(error.message);
+        else
+          logging.error(NAMESPACE, error?.message, { error });
       }
     });
 

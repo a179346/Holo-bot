@@ -19,7 +19,17 @@ async function retry<T> (asyncFunc: ()=>Promise<T>, retryCount = 3, retryDelayMs
   }
 }
 
+function youtubeChannelUrl (channelId: string) {
+  return 'https://www.youtube.com/channel/' + channelId;
+}
+
+function twitterUserUrl (twitterLink: string) {
+  return 'https://twitter.com/' + twitterLink;
+}
+
 export const Lib = {
   delay,
   retry,
+  youtubeChannelUrl,
+  twitterUserUrl,
 };

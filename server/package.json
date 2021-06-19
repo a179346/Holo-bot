@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/a179346/Holo-bot#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "mysql": "^2.18.1",

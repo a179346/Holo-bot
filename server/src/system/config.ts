@@ -3,6 +3,9 @@ dotenv.config();
 
 // DISCORD BOT
 process.env.DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN || 'DISCORD_BOT_TOKEN';
+// HOLO API
+process.env.HOLO_API_URL = process.env.HOLO_API_URL || 'https://api.holotools.app/v1/';
+process.env.HOLO_API_TIMEOUT = process.env.HOLO_API_TIMEOUT || '10000'; // 10 seconds
 // DB
 process.env.DB_HOST = process.env.DB_HOST || 'db';
 process.env.DB_PORT = process.env.DB_PORT || '3306';
@@ -12,6 +15,11 @@ process.env.DB_DATABASE = process.env.DB_DATABASE || 'my-db';
 
 const DISCORD_BOT = {
   TOKEN: process.env.DISCORD_BOT_TOKEN,
+};
+
+const HOLO_API = {
+  URL: process.env.HOLO_API_URL,
+  TIMEOUT: parseInt(process.env.HOLO_API_TIMEOUT, 10),
 };
 
 const DB = {
@@ -24,5 +32,6 @@ const DB = {
 
 export const config = {
   DB,
+  HOLO_API,
   DISCORD_BOT,
 };
