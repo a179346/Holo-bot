@@ -18,6 +18,9 @@ export class channel {
     @Column({ length: 128 })
     name!: string;
 
+    @Column({ length: 32, nullable: true })
+    emoji?: string;
+
     @OneToMany(() => channel_nickname, (channel_nickname) => channel_nickname.channel)
     nicknames!: string[];
 }

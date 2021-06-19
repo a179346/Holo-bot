@@ -19,7 +19,8 @@ const ChannelGetCommand = new Command('get', 'Fetches info about a channel.', as
     throw new ReplyError(channelApiVal.data.message);
   // const prefix = '\n╰ ';
   // const prefix = '\n:arrow_forward:  ';
-  const prefix = '\n:point_right:  ';
+  const emoji = channelNicknameVal.channel.emoji || ':point_right:';
+  const prefix = '\n' + emoji + '  ';
 
   let info = '【' + channelApiVal.data.name + '】';
   if (channelApiVal.data.yt_channel_id)
