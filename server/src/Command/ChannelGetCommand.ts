@@ -28,9 +28,9 @@ const ChannelGetCommand = new Command('get', 'Fetches info about a channel.', as
   if (channelApiVal.data.twitter_link)
     info += prefix + 'Twitter:  ' + Lib.twitterUserUrl(channelApiVal.data.twitter_link);
   if (channelApiVal.data.subscriber_count)
-    info += prefix + 'Subscriber count:  ' + channelApiVal.data.subscriber_count;
+    info += prefix + 'Subscriber count:  ' + channelApiVal.data.subscriber_count.toLocaleString('en');
   if (channelApiVal.data.video_count)
-    info += prefix + 'Video count:  ' + channelApiVal.data.video_count;
+    info += prefix + 'Video count:  ' + channelApiVal.data.video_count.toLocaleString('en');
 
   msg.channel.send(info);
 });
