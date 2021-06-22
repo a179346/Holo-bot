@@ -14,6 +14,7 @@ class TypeormConnection {
       database: config.DB.DATABASE,
       entities: [ path.resolve(__dirname, '../entity/*.{js,ts}') ],
       synchronize: false,
+      charset: 'utf8mb4',
     });
   }
 

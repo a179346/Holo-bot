@@ -5,6 +5,7 @@ import { Lib } from './lib/common';
 import { config } from './system/config';
 import { Bot } from './bot';
 import { HoloBotServiceSet } from './HoloBotServiceSet';
+import { Jobs } from './cron';
 
 const NAMESPACE = 'Index';
 start();
@@ -18,6 +19,8 @@ async function start () {
 
     logging.info(NAMESPACE, 'init HoloBot ServiceSet');
     await HoloBotServiceSet.init();
+
+    await Jobs.start();
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
     const bot = new Bot([ HoloBotServiceSet ]);

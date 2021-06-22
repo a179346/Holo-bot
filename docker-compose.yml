@@ -12,6 +12,7 @@ services:
   db:
     image: mariadb
     container_name: "db"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
     environment:
       MYSQL_USER: "mysql_user"
       MYSQL_PASSWORD: "mysql_password"

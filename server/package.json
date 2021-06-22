@@ -10,7 +10,8 @@
     "lint": "eslint . --ext .js,.ts",
     "lint-fix": "eslint --fix . --ext .js,.ts",
     "migration-generate": "ts-node ./node_modules/.bin/typeorm migration:generate -n $NAME",
-    "migration-run": "ts-node ./node_modules/.bin/typeorm migration:run"
+    "migration-run": "ts-node ./node_modules/.bin/typeorm migration:run",
+    "migration-run-win": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   "homepage": "https://github.com/a179346/Holo-bot#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "cron": "^1.8.2",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "mysql": "^2.18.1",
@@ -31,6 +33,7 @@
     "typeorm": "^0.2.32"
   },
   "devDependencies": {
+    "@types/cron": "^1.7.2",
     "@types/node": "^14.14.41",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",

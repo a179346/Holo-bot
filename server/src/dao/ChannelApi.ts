@@ -3,7 +3,7 @@ import { ICache } from '../cache/ICahce';
 import { LocalCache } from '../cache/LocalCache';
 import { config } from '../system/config';
 
-interface ChannelApiSuccessResponse {
+export interface ChannelApiSuccessResponse {
   id: number;
   yt_channel_id: string | null;
   bb_space_id: string | null;
