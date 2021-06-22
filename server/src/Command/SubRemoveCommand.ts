@@ -6,7 +6,7 @@ const SubRemoveCommand = new Command('rm', 'Unsubscribe a hololive member. Stop 
   throw new ReplyError('service not yet implemented.');
 });
 
-SubRemoveCommand.addOption(new CommandOption('name', [ 'name', 'n' ], 'holomem name', true));
+SubRemoveCommand.addOption(new CommandOption('nickname', [ 'name', 'n' ], 'holomem name', true));
 
 export {
   SubRemoveCommand,
