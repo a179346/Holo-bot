@@ -11,6 +11,7 @@ export class Service {
   private exampleCommand;
   public commands: Command[] = [];
   private helpMessage = '';
+  private helpMessageCache: { [prefix: string]: string } = {};
 
   constructor (name: string, description: string, exampleCommand: string) {
     this.name = name;
@@ -61,7 +62,11 @@ export class Service {
   }
 
   private getHelpMessage (serviceSet: ServiceSet): string {
-    return this.helpMessage
+    if (this.helpMessageCache[serviceSet.prefix])
+      return this.helpMessageCache[serviceSet.prefix];
+
+    this.helpMessageCache[serviceSet.prefix] = this.helpMessage
       .replace(/{{prefix}}/g, serviceSet.prefix);
+    return this.helpMessageCache[serviceSet.prefix];
   }
 }
