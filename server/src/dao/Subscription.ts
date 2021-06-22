@@ -8,6 +8,15 @@ class SubscriptionDao {
     return TypeOrmConnection.connection.getRepository(subscription);
   }
 
+  public async list (discord_channel_id: string): Promise<subscription[]> {
+    return await this.repository.find({
+      relations: [ 'channel' ],
+      where: {
+        discord_channel_id
+      },
+    });
+  }
+
   public async remove (discord_channel_id: string, channelId: number): Promise<void> {
     await this.repository.delete({
       discord_channel_id,
