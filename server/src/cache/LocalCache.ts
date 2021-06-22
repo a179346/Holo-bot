@@ -1,4 +1,4 @@
-import { ICache } from './ICahce';
+import { ICache, CacheOptions, CacheOptionType } from './ICahce';
 
 export class LocalCache<T> implements ICache<T> {
   private cache: {
@@ -8,9 +8,15 @@ export class LocalCache<T> implements ICache<T> {
     } | undefined,
   } = {};
 
-  async set (key: string, value: T, expireMs: number): Promise<void> {
+  async set (key: string, value: T, cacheOptions: CacheOptions): Promise<void> {
+    let expireAt = 0;
+    if (cacheOptions.type === CacheOptionType.EXPIRE_AT)
+      expireAt = cacheOptions.expireAt;
+    else if (cacheOptions.type === CacheOptionType.EXPIRE_MS)
+      expireAt =  new Date().getTime() + cacheOptions.expireMs;
+
     this.cache[key] = {
-      expireAt: new Date().getTime() + expireMs,
+      expireAt,
       value,
     };
   }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ICache } from '../cache/ICahce';
+import { CacheOptionType, ICache } from '../cache/ICahce';
 import { LocalCache } from '../cache/LocalCache';
 import { config } from '../system/config';
 
@@ -62,7 +62,10 @@ class ChannelApiDao {
         status: 'success',
         data: response.data as ChannelApiSuccessResponse,
       };
-      await cache.set(holo_api_id, data, SUCCESS_EXPIRE_MS);
+      await cache.set(holo_api_id, data, {
+        type: CacheOptionType.EXPIRE_MS,
+        expireMs: SUCCESS_EXPIRE_MS,
+      });
       return data;
     } catch (error) {
       let message = error?.response?.data?.message || error?.message || 'Unknown error';
@@ -77,7 +80,10 @@ class ChannelApiDao {
         },
       };
 
-      await cache.set(holo_api_id, data, ERROR_EXPIRE_MS);
+      await cache.set(holo_api_id, data, {
+        type: CacheOptionType.EXPIRE_MS,
+        expireMs: ERROR_EXPIRE_MS,
+      });
       return data;
     }
   }

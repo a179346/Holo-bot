@@ -23,6 +23,10 @@ function youtubeChannelUrl (channelId: string) {
   return 'https://www.youtube.com/channel/' + channelId;
 }
 
+function youtubeVideoUrl (videoKey: string) {
+  return 'https://www.youtube.com/watch?v=' + videoKey;
+}
+
 function twitterUserUrl (twitterLink: string) {
   return 'https://twitter.com/' + twitterLink;
 }
@@ -31,5 +35,6 @@ export const Lib = {
   delay,
   retry,
   youtubeChannelUrl,
+  youtubeVideoUrl,
   twitterUserUrl,
 };

@@ -2,7 +2,7 @@ import { TypeOrmConnection } from '../utils/typeorm-connection';
 import { Repository } from 'typeorm';
 import { channel_nickname } from '../entity/channel_nickname';
 import { LocalCache } from '../cache/LocalCache';
-import { ICache } from '../cache/ICahce';
+import { CacheOptionType, ICache } from '../cache/ICahce';
 
 const cache: ICache<channel_nickname | null> = new LocalCache();
 // 15 MINUTES
@@ -14,12 +14,16 @@ class ChannelNicknameDao {
   }
 
   public async get (nickname: string): Promise<channel_nickname | null> {
-    const cacheVal = await cache.get(nickname);
+    const lowerCaseNickname = nickname.toLowerCase();
+    const cacheVal = await cache.get(lowerCaseNickname);
     if (cacheVal !== undefined)
       return cacheVal;
 
-    const result = await this.repository.findOne(nickname, { relations: [ 'channel' ] }) || null;
-    await cache.set(nickname, result, EXPIRE_MS);
+    const result = await this.repository.findOne(lowerCaseNickname, { relations: [ 'channel' ] }) || null;
+    await cache.set(lowerCaseNickname, result, {
+      type: CacheOptionType.EXPIRE_MS,
+      expireMs: EXPIRE_MS,
+    });
     return result;
   }
 }

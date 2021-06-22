@@ -1,11 +1,38 @@
 import { TypeOrmConnection } from '../utils/typeorm-connection';
 import { Repository } from 'typeorm';
-import { live } from '../entity/live';
+import { live, LiveStatus } from '../entity/live';
 import { channel } from '../entity/channel';
+import { CacheOptionType, ICache } from '../cache/ICahce';
+import { LocalCache } from '../cache/LocalCache';
+
+const cache: ICache<live[]> = new LocalCache();
+
+// 1 MINUTE
+const EXPIRE_MS = 1000 * 60 * 1;
 
 class LiveDao {
   private get repository (): Repository<live> {
     return TypeOrmConnection.connection.getRepository(live);
+  }
+
+  public async fetch (channelId: number, liveStatus: LiveStatus[]) {
+    const cacheKey = channelId + '-' + liveStatus.join('-');
+    const cacheVal = await cache.get(cacheKey);
+    if (cacheVal !== undefined)
+      return cacheVal;
+
+    const lives = await this.repository.createQueryBuilder()
+      .select('live')
+      .where('live_status IN (:...liveStatus)', { liveStatus })
+      .where('channelId = :channelId', { channelId })
+      .getMany();
+
+    await cache.set(cacheKey, lives, {
+      type: CacheOptionType.EXPIRE_MS,
+      expireMs: EXPIRE_MS,
+    });
+
+    return lives;
   }
 
   public async upsert (id: number, data: Partial<live> & { channel_id?: number }) {
