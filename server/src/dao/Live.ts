@@ -23,8 +23,8 @@ class LiveDao {
 
     const lives = await this.repository.createQueryBuilder()
       .select('live')
-      .where('live_status IN (:...liveStatus)', { liveStatus })
       .where('channelId = :channelId', { channelId })
+      .where('live_status IN (:...liveStatus)', { liveStatus })
       .getMany();
 
     await cache.set(cacheKey, lives, {

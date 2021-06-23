@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Index } from 'typeorm';
 import { channel } from './channel';
 
 export enum LiveStatus {
@@ -13,6 +13,8 @@ export enum PubStatus {
 }
 
 @Entity()
+@Index([ 'channel', 'live_status' ])
+@Index([ 'live_status', 'pub_status' ])
 export class live {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -22,6 +24,9 @@ export class live {
 
     @Column({ length: 256 })
     title!: string;
+
+    @ManyToOne(() => channel)
+    channel!: channel;
 
     @Column({
       type: 'enum',
@@ -45,7 +50,4 @@ export class live {
 
     @Column({ type: 'timestamp', nullable: true })
     live_end?: Date;
-
-    @ManyToOne(() => channel)
-    channel!: channel;
 }

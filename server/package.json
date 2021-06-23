@@ -10,6 +10,7 @@
     "lint": "eslint . --ext .js,.ts",
     "lint-fix": "eslint --fix . --ext .js,.ts",
     "migration-generate": "ts-node ./node_modules/.bin/typeorm migration:generate -n $NAME",
+    "migration-generate-win": "ts-node ./node_modules/typeorm/cli.js migration:generate -n $NAME",
     "migration-run": "ts-node ./node_modules/.bin/typeorm migration:run",
     "migration-run-win": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
