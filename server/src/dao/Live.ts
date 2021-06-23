@@ -1,6 +1,6 @@
 import { TypeOrmConnection } from '../utils/typeorm-connection';
 import { Repository } from 'typeorm';
-import { live, LiveStatus } from '../entity/live';
+import { live, LiveStatus, PubStatus } from '../entity/live';
 import { channel } from '../entity/channel';
 import { CacheOptionType, ICache } from '../cache/ICahce';
 import { LocalCache } from '../cache/LocalCache';
@@ -33,6 +33,21 @@ class LiveDao {
     });
 
     return lives;
+  }
+
+  async setPublished (live: live): Promise<live> {
+    live.pub_status = PubStatus.PUBLISHED;
+    return await this.repository.save(live);
+  }
+
+  async fetchWaitingLives (): Promise<live[]> {
+    return await this.repository.find({
+      relations: [ 'channel' ],
+      where: {
+        live_status: LiveStatus.LIVE,
+        pub_status: PubStatus.WAINTING,
+      },
+    });
   }
 
   public async upsert (id: number, data: Partial<live> & { channel_id?: number }) {

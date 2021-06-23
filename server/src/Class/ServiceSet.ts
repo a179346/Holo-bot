@@ -3,6 +3,9 @@ import { readFile } from 'fs/promises';
 import { ReplyError } from './ReplyError';
 import { Service } from './Service';
 import * as path from 'path';
+import { logging } from '../utils/logging';
+
+const NAMESPACE = 'ServiceSet';
 
 export class ServiceSet {
   public prefix: string;
@@ -29,6 +32,7 @@ export class ServiceSet {
   }
 
   public async init () {
+    logging.info(NAMESPACE, 'init ' + this.prefix);
     await this.resetHelpMessage();
     for (const service of this.services) {
       await service.init();

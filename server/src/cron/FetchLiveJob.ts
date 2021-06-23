@@ -8,7 +8,6 @@ const NAMESPACE = 'FetchLiveJob';
 
 export const FetchLiveJob = new CronJob('20 * * * * *', async function () {
   await fetchLiveDataAndInsertToDb();
-  // console.log(new Date());
 }, null, true, 'America/Los_Angeles');
 
 

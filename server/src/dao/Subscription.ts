@@ -17,6 +17,12 @@ class SubscriptionDao {
     });
   }
 
+  public async getChannelSubs (channelId: number): Promise<subscription[]> {
+    return await this.repository.find({
+      channel: { id: channelId },
+    });
+  }
+
   public async remove (discord_channel_id: string, channelId: number): Promise<void> {
     await this.repository.delete({
       discord_channel_id,
