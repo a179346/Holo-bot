@@ -31,12 +31,6 @@ class SubscriptionDao {
   }
 
   public async insert (discord_channel_id: string, channelId: number): Promise<subscription> {
-    const sub = await this.repository.findOne({
-      discord_channel_id,
-      channel: { id: channelId }
-    });
-    if (sub) return sub;
-
     const model = new subscription();
 
     model.discord_channel_id = discord_channel_id;
