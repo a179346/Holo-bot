@@ -1,5 +1,7 @@
 import { ICache, CacheOptions, CacheOptionType } from './ICahce';
 
+const CacheList: LocalCache<any>[] = [];
+
 export class LocalCache<T> implements ICache<T> {
   private cache: {
     [key: string]: {
@@ -7,6 +9,24 @@ export class LocalCache<T> implements ICache<T> {
       value: T,
     } | undefined,
   } = {};
+
+  constructor () {
+    CacheList.push(this);
+  }
+
+  public static deleteExpired () {
+    const nowTimestamp = new Date().getTime();
+
+    for (const localCache of CacheList) {
+      for (const key in localCache.cache) {
+        if (Object.prototype.hasOwnProperty.call(localCache.cache, key)) {
+          const data = localCache.cache[key];
+          if (data && nowTimestamp > data.expireAt)
+            delete localCache.cache[key];
+        }
+      }
+    }
+  }
 
   async set (key: string, value: T, cacheOptions: CacheOptions): Promise<void> {
     let expireAt = 0;
@@ -27,7 +47,7 @@ export class LocalCache<T> implements ICache<T> {
 
     const nowTimestamp = new Date().getTime();
     if (nowTimestamp > data.expireAt) {
-      this.cache[key] = undefined;
+      delete this.cache[key];
       return undefined;
     }
 
