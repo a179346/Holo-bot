@@ -23,6 +23,19 @@ async function fetchLiveDataAndInsertToDb () {
     await upsertIntoLiveDao(liveApiResult.data.live, LiveStatus.LIVE);
     await upsertIntoLiveDao(liveApiResult.data.upcoming, LiveStatus.UPCOMING);
     await upsertIntoLiveDao(liveApiResult.data.ended, LiveStatus.ENDED);
+
+    const liveIds: number[] = [];
+    for (const liveVedio of liveApiResult.data.live) {
+      liveIds.push(liveVedio.id);
+    }
+    for (const liveVedio of liveApiResult.data.upcoming) {
+      liveIds.push(liveVedio.id);
+    }
+    for (const liveVedio of liveApiResult.data.ended) {
+      liveIds.push(liveVedio.id);
+    }
+
+    await LiveDao.deleteCanceled(liveIds);
   } catch (error) {
     logging.error(NAMESPACE, error?.message, error);
   }

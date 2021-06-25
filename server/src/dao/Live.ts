@@ -35,12 +35,12 @@ class LiveDao {
     return lives;
   }
 
-  async setPublished (live: live): Promise<live> {
+  public async setPublished (live: live): Promise<live> {
     live.pub_status = PubStatus.PUBLISHED;
     return await this.repository.save(live);
   }
 
-  async fetchWaitingLives (): Promise<live[]> {
+  public async fetchWaitingLives (): Promise<live[]> {
     return await this.repository.find({
       relations: [ 'channel' ],
       where: {
@@ -48,6 +48,15 @@ class LiveDao {
         pub_status: PubStatus.WAINTING,
       },
     });
+  }
+
+  public async deleteCanceled (liveIds: number[]) {
+    await this.repository.createQueryBuilder()
+      .delete()
+      .from(live)
+      .where('live_status IN (:...liveStatus)', { liveStatus: [ LiveStatus.UPCOMING, LiveStatus.LIVE ] })
+      .andWhere('id NOT IN (:...liveIds)', { liveIds })
+      .execute();
   }
 
   public async upsert (id: number, data: Partial<live> & { channel_id?: number }) {

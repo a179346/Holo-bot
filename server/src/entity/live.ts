@@ -15,6 +15,7 @@ export enum PubStatus {
 @Entity()
 @Index([ 'channel', 'live_status' ])
 @Index([ 'live_status', 'pub_status' ])
+@Index([ 'live_status', 'id' ])
 export class live {
     @PrimaryGeneratedColumn()
     id!: number;
