@@ -26,6 +26,7 @@ class Bot {
 
     this.client.on('message', async (msg) => {
       try {
+        if (msg.author.bot) return;
         const content = msg.content;
         const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.checkContent(content));
         if (!serviceSet) return;
