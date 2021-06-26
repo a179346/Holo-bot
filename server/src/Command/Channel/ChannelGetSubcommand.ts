@@ -1,15 +1,29 @@
-import { Command } from '../Class/Command';
-import { CommandOption } from '../Class/CommandOption';
-import { ReplyError } from '../Class/ReplyError';
-import { ChannelApiDao } from '../dao/ChannelApi';
-import { ChannelNicknameDao } from '../dao/ChannelNickname';
-import { Lib } from '../lib/common';
+import { Subcommnad } from '../../Class/Subcommand';
+import { ReplyError } from '../../Class/ReplyError';
+import { ChannelApiDao } from '../../dao/ChannelApi';
+import { ChannelNicknameDao } from '../../dao/ChannelNickname';
+import { Lib } from '../../lib/common';
+import { CommandOptionType } from '../../interface/CommandOptionType';
 
-interface ChannelGetOption {
-  nickname: string;
-}
-
-const ChannelGetCommand = new Command('get', 'Fetches info about a channel.', async (msg, serviceSet, messages, body: ChannelGetOption) => {
+const ChannelGetSubcommand = new Subcommnad({
+  name: 'get',
+  description: 'Fetches info about a channel.',
+  type: CommandOptionType.SUB_COMMAND,
+  options: [ {
+    name: 'name',
+    description: 'holomem\'s name',
+    type: CommandOptionType.STRING,
+    required: true,
+  }, {
+    name: 'private-reply',
+    description: 'If false, reply is public.',
+    type: CommandOptionType.BOOLEAN,
+    required: true,
+  }, ]
+}, async (interaction) => {
+  const body = {
+    nickname: 'okayu',
+  };
   const channelNicknameVal = await ChannelNicknameDao.get(body.nickname);
   if (!channelNicknameVal)
     throw new ReplyError('Holomem not found: ' + body.nickname);
@@ -32,11 +46,9 @@ const ChannelGetCommand = new Command('get', 'Fetches info about a channel.', as
   if (channelApiVal.data.video_count)
     info += prefix + 'Video count:  ' + channelApiVal.data.video_count.toLocaleString('en');
 
-  msg.channel.send(info);
+  interaction.channel.send(info);
 });
 
-ChannelGetCommand.addOption(new CommandOption('nickname', [ 'name', 'n' ], 'holomem name', true));
-
 export {
-  ChannelGetCommand,
+  ChannelGetSubcommand,
 };

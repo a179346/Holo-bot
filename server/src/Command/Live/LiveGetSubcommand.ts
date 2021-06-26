@@ -1,16 +1,30 @@
-import { Command } from '../Class/Command';
-import { CommandOption } from '../Class/CommandOption';
-import { ReplyError } from '../Class/ReplyError';
-import { ChannelNicknameDao } from '../dao/ChannelNickname';
-import { LiveDao } from '../dao/Live';
-import { LiveStatus } from '../entity/live';
-import { Lib } from '../lib/common';
+import { Subcommnad } from '../../Class/Subcommand';
+import { ReplyError } from '../../Class/ReplyError';
+import { ChannelNicknameDao } from '../../dao/ChannelNickname';
+import { LiveDao } from '../../dao/Live';
+import { LiveStatus } from '../../entity/live';
+import { Lib } from '../../lib/common';
+import { CommandOptionType } from '../../interface/CommandOptionType';
 
-interface LiveListOption {
-  nickname: string;
-}
-
-const LiveListCommand = new Command('list', 'Fetches live, upcoming and recently ended streams.', async (msg, serviceSet, messages, body: LiveListOption) => {
+const LiveGetSubcommand = new Subcommnad({
+  name: 'get',
+  description: 'Fetches live, upcoming and recently ended streams.',
+  type: CommandOptionType.SUB_COMMAND,
+  options: [ {
+    name: 'name',
+    description: 'holomem\'s name',
+    type: CommandOptionType.STRING,
+    required: true,
+  }, {
+    name: 'private-reply',
+    description: 'If false, reply is public.',
+    type: CommandOptionType.BOOLEAN,
+    required: true,
+  }, ]
+}, async (interaction) => {
+  const body = {
+    nickname: 'okayu',
+  };
   const channelNicknameVal = await ChannelNicknameDao.get(body.nickname);
   if (!channelNicknameVal)
     throw new ReplyError('Holomem not found: ' + body.nickname);
@@ -41,11 +55,9 @@ const LiveListCommand = new Command('list', 'Fetches live, upcoming and recently
     }
   }
 
-  msg.channel.send(info);
+  interaction.channel.send(info);
 });
 
-LiveListCommand.addOption(new CommandOption('nickname', [ 'name', 'n' ], 'holomem name', true));
-
 export {
-  LiveListCommand,
+  LiveGetSubcommand,
 };

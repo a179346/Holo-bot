@@ -1,4 +1,4 @@
 import { Bot } from './Class/Bot';
-import { HoloBotServiceSet } from './HoloBotServiceSet';
+import { commandSet } from './commandSet';
 
-export const bot = new Bot([ HoloBotServiceSet ]);
+export const bot = new Bot(commandSet);

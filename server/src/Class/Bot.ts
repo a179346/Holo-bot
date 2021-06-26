@@ -1,51 +1,59 @@
 import { Client, Intents } from 'discord.js';
-import { ReplyError } from './ReplyError';
-import { ServiceSet } from './ServiceSet';
+import { CommandSet } from './CommandSet';
 import { logging } from '../utils/logging';
 import { Client as InteractionsClient } from 'discord-slash-commands-client';
 import { interaction } from '../interface/interaction';
+import { ReplyError } from './ReplyError';
 
 const NAMESPACE = 'BOT';
 
 class Bot {
-  private serviceSets: ServiceSet[];
+  private commandSet: CommandSet;
   private client: Client;
 
-  constructor (serviceSets: ServiceSet[]) {
+  constructor (commandSet: CommandSet) {
     this.client = new Client({
       intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES ]
     });
-    this.serviceSets = serviceSets;
+    this.commandSet = commandSet;
   }
 
   public async init (discordToken: string, discordBotUserId: string) {
-    for (const serviceSet of this.serviceSets) {
-      await serviceSet.init();
-    }
     this.client.interactions = new InteractionsClient(discordToken, discordBotUserId);
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
-    this.client.on('ready', () => {
+    this.client.on('ready', async () => {
       logging.info(NAMESPACE, `Logged in to discord as ${this.client.user?.tag}!`);
-      // this.client.interactions.getCommands({}).then(console.log).catch(console.error);
 
-      // this.client.interactions
-      //   .deleteCommand('interaction id')
-      //   .then(console.log)
-      //   .catch(console.error);
+      // await this.client.interactions.deleteCommand('interaction id');
 
-      // this.client.interactions
-      //   .createCommand({
-      //     name: 'ping',
-      //     description: 'ping pong',
-      //   })
-      //   .then(console.log)
-      //   .catch(console.error);
+      const commands = await this.client.interactions.getCommands({});
+      if (Array.isArray(commands) && commands.length === 0) {
+        try {
+          for (const command of this.commandSet.commands) {
+            await this.client.interactions.createCommand(command.options);
+          }
+        } catch (error) {
+          logging.error(NAMESPACE, JSON.stringify(error?.response?.data));
+        }
+      }
     });
 
 
     this.client.on('interactionCreate', async (interaction: interaction) => {
-      // console.log(interaction.name);
+      try {
+        const command = this.commandSet.getCommand(interaction.name);
+        if (!command)
+          throw new ReplyError('Unknown command: ' + interaction.name);
+
+        await command.run(interaction);
+      } catch (error) {
+        if (error instanceof ReplyError)
+          interaction.reply(error.message);
+        else
+          logging.error(NAMESPACE, error?.message, { error });
+      }
+
       // if (interaction.name === 'ping') {
       //   // send an initial reply
       //   await interaction.reply('Pong');
@@ -64,25 +72,6 @@ class Bot {
       //     interaction.edit('Edited follow up message', messageId);
       //   }, 5000);
       // }
-    });
-
-    this.client.on('message', async (msg) => {
-      try {
-        if (msg.author.bot) return;
-        const content = msg.content;
-        const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.checkContent(content));
-        if (!serviceSet) return;
-
-        const messages = content.match(/[^ ]+/g);
-        if (!messages || messages.length === 0) return;
-
-        await serviceSet.runEvent(msg, messages);
-      } catch (error) {
-        if (error instanceof ReplyError)
-          msg.reply(error.message);
-        else
-          logging.error(NAMESPACE, error?.message, { error });
-      }
     });
 
     await this.client.login(discordToken);
