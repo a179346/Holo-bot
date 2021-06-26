@@ -49,29 +49,12 @@ class Bot {
         await command.run(interaction);
       } catch (error) {
         if (error instanceof ReplyError)
-          interaction.reply(error.message);
-        else
+          interaction.reply(error.message, true);
+        else {
+          interaction.reply('Unknown error occurred...', true);
           logging.error(NAMESPACE, error?.message, { error });
+        }
       }
-
-      // if (interaction.name === 'ping') {
-      //   // send an initial reply
-      //   await interaction.reply('Pong');
-
-      //   // send a followup
-      //   const messageId = await interaction.reply({
-      //     content: 'Follow up message',
-      //     embeds: [ new MessageEmbed().setDescription('Follow up test') ],
-      //   });
-
-      //   setTimeout(() => {
-      //     // delete initial reply
-      //     interaction.delete();
-
-      //     // edit 1st followup
-      //     interaction.edit('Edited follow up message', messageId);
-      //   }, 5000);
-      // }
     });
 
     await this.client.login(discordToken);

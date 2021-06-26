@@ -6,6 +6,11 @@ import { LiveStatus } from '../../entity/live';
 import { Lib } from '../../lib/common';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
+interface LiveGetBody {
+  name: string;
+  'private-reply': boolean;
+}
+
 const LiveGetSubcommand = new Subcommnad({
   name: 'get',
   description: 'Fetches live, upcoming and recently ended streams.',
@@ -21,13 +26,10 @@ const LiveGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction) => {
-  const body = {
-    nickname: 'okayu',
-  };
-  const channelNicknameVal = await ChannelNicknameDao.get(body.nickname);
+}, async (interaction, body: LiveGetBody) => {
+  const channelNicknameVal = await ChannelNicknameDao.get(body.name);
   if (!channelNicknameVal)
-    throw new ReplyError('Holomem not found: ' + body.nickname);
+    throw new ReplyError('Holomem not found: ' + body.name);
 
   const lives = await LiveDao.fetch(channelNicknameVal.channel.id, [ LiveStatus.UPCOMING, LiveStatus.LIVE ]);
 
@@ -55,7 +57,7 @@ const LiveGetSubcommand = new Subcommnad({
     }
   }
 
-  interaction.channel.send(info);
+  interaction.reply(info, body['private-reply']);
 });
 
 export {

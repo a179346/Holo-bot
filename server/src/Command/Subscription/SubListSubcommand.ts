@@ -3,6 +3,10 @@ import { SubscriptionDao } from '../../dao/Subscription';
 import { subscription } from '../../entity/subscription';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
+interface SubListBody {
+  'private-reply': boolean;
+}
+
 const SubListSubcommand = new Subcommnad({
   name: 'list',
   description: 'List current subscriptions.',
@@ -13,8 +17,8 @@ const SubListSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ],
-}, async (interation) => {
-  const list = await SubscriptionDao.list(interation.channel.id);
+}, async (interaction, body: SubListBody) => {
+  const list = await SubscriptionDao.list(interaction.channel.id);
 
   let info = '【Subscription List】';
   if (list.length === 0)
@@ -25,7 +29,7 @@ const SubListSubcommand = new Subcommnad({
     }
   }
 
-  interation.channel.send(info);
+  interaction.reply(info, body['private-reply']);
 });
 
 function formatSub (sub: subscription) {

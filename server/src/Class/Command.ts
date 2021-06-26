@@ -2,6 +2,7 @@ import { Subcommnad } from './Subcommand';
 import { ApplicationOptions } from 'discord-slash-commands-client';
 import { interaction } from '../interface/interaction';
 import { ReplyError } from './ReplyError';
+import { CommandOptionType } from '../interface/CommandOptionType';
 
 
 export class Command {
@@ -24,6 +25,9 @@ export class Command {
   }
 
   public async run (interaction: interaction) {
+    if (interaction.options?.[0].type !== CommandOptionType.SUB_COMMAND)
+      throw new ReplyError('Invalid command: ' + interaction.name);
+
     const subcommandName = interaction.options?.[0].name;
     if (!subcommandName)
       throw new ReplyError('Unknown command: ' + interaction.name);

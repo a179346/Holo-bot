@@ -5,6 +5,11 @@ import { ChannelNicknameDao } from '../../dao/ChannelNickname';
 import { Lib } from '../../lib/common';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
+interface ChannelGetBody {
+  name: string;
+  'private-reply': boolean;
+}
+
 const ChannelGetSubcommand = new Subcommnad({
   name: 'get',
   description: 'Fetches info about a channel.',
@@ -20,13 +25,10 @@ const ChannelGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction) => {
-  const body = {
-    nickname: 'okayu',
-  };
-  const channelNicknameVal = await ChannelNicknameDao.get(body.nickname);
+}, async (interaction, body: ChannelGetBody) => {
+  const channelNicknameVal = await ChannelNicknameDao.get(body.name);
   if (!channelNicknameVal)
-    throw new ReplyError('Holomem not found: ' + body.nickname);
+    throw new ReplyError('Holomem not found: ' + body.name);
 
   const channelApiVal = await ChannelApiDao.getById(channelNicknameVal.channel.holo_api_id.toString());
   if (channelApiVal.status === 'error')
@@ -46,7 +48,7 @@ const ChannelGetSubcommand = new Subcommnad({
   if (channelApiVal.data.video_count)
     info += prefix + 'Video count:  ' + channelApiVal.data.video_count.toLocaleString('en');
 
-  interaction.channel.send(info);
+  interaction.reply(info, body['private-reply']);
 });
 
 export {

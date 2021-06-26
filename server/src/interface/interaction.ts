@@ -1,4 +1,27 @@
 import Discord, { MessageEmbed } from 'discord.js';
+import { CommandOptionType } from './CommandOptionType';
+
+interface SubcommandOption {
+  type: CommandOptionType.SUB_COMMAND;
+  options: interfaceOption;
+  name: string;
+}
+
+interface StringOption {
+  value: string;
+  type: CommandOptionType.STRING;
+  name: string;
+}
+
+interface BooleanOption {
+  value: boolean;
+  type: CommandOptionType.BOOLEAN;
+  name: string;
+}
+
+type OptionUnit = SubcommandOption | StringOption | BooleanOption;
+
+type interfaceOption = OptionUnit[] | null;
 
 export interface interaction {
   id: string;
@@ -10,7 +33,7 @@ export interface interaction {
   name: string;// name of this command
   content: string;// content of this command (everything after the main command name)
   createdTimestamp: number;// timestamp of this command being used
-  options: { value: string; name: string }[] | null;// list of options this user inputted to the command
+  options: interfaceOption;// list of options this user inputted to the command
   /**
    * Replies to this Interaction.
    *
