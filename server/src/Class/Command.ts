@@ -4,15 +4,19 @@ import { interaction } from '../interface/interaction';
 import { ReplyError } from './ReplyError';
 import { CommandOptionType } from '../interface/CommandOptionType';
 
+type CheckEvent = (interaction: interaction) => Promise<void>;
+
 
 export class Command {
   public options: ApplicationOptions;
   private subcommands: Subcommnad[] = [];
   private subcommandMap: Map<string, Subcommnad> = new Map();
+  private checkEvent?: CheckEvent;
 
 
-  constructor (options: ApplicationOptions) {
+  constructor (options: ApplicationOptions, checkEvent?: CheckEvent) {
     this.options = options;
+    this.checkEvent = checkEvent;
   }
 
   public addSubcommand (subcommand: Subcommnad) {
@@ -35,6 +39,8 @@ export class Command {
     if (!subcommand)
       throw new ReplyError('Unknown subcommand: ' + subcommandName);
 
+    if (this.checkEvent)
+      await this.checkEvent(interaction);
     await subcommand.run(interaction);
   }
 }

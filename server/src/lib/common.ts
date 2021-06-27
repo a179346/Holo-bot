@@ -1,4 +1,7 @@
 import { ApplicationCommandOptionChoice } from 'discord-slash-commands-client';
+import { PermissionDao } from '../dao/Permission';
+import { PermissionType } from '../entity/permission';
+import { interaction } from '../interface/interaction';
 
 function delay (delayMs: number): Promise<null> {
   return new Promise((resolve) => {
@@ -47,6 +50,23 @@ function enumToChoices (enumVal: {[key: string]: any}): ApplicationCommandOption
   return choices;
 }
 
+async function checkPermission (interaction: interaction, permissionType: PermissionType, ownerDefaultEnable: boolean): Promise<boolean> {
+  if (ownerDefaultEnable && interaction.guild.ownerID === interaction.author?.id)
+    return true;
+
+  if (!interaction.member)
+    return false;
+
+  const permissions = await PermissionDao.list(interaction.channel.id, permissionType);
+  const member = await interaction.member.fetch(true);
+  for (const permission of permissions) {
+    if (member.roles.cache.has(permission.role_id))
+      return true;
+  }
+
+  return false;
+}
+
 export const Lib = {
   delay,
   retry,
@@ -54,4 +74,5 @@ export const Lib = {
   youtubeVideoUrl,
   twitterUserUrl,
   enumToChoices,
+  checkPermission,
 };

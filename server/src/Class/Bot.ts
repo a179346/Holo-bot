@@ -13,7 +13,9 @@ class Bot {
 
   constructor (commandSet: CommandSet) {
     this.client = new Client({
-      intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES ]
+      intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES ],
+      messageCacheLifetime: 150,
+      messageSweepInterval: 150,
     });
     this.commandSet = commandSet;
   }
@@ -43,9 +45,6 @@ class Bot {
 
     this.client.on('interactionCreate', async (interaction: interaction) => {
       try {
-        // console.log(interaction.guild.roles);
-        // console.log(interaction.guild.ownerID);
-        // console.log(interaction.author?.id);
         const command = this.commandSet.getCommand(interaction.name);
         if (!command)
           throw new ReplyError('Unknown command: ' + interaction.name);
