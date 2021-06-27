@@ -14,7 +14,7 @@ export class LocalCache<T> implements ICache<T> {
     CacheList.push(this);
   }
 
-  public static deleteExpired () {
+  public static async deleteExpired () {
     const nowTimestamp = new Date().getTime();
 
     for (const localCache of CacheList) {
@@ -22,7 +22,7 @@ export class LocalCache<T> implements ICache<T> {
         if (Object.prototype.hasOwnProperty.call(localCache.cache, key)) {
           const data = localCache.cache[key];
           if (data && nowTimestamp > data.expireAt)
-            delete localCache.cache[key];
+            await localCache.delete(key);
         }
       }
     }
@@ -47,10 +47,14 @@ export class LocalCache<T> implements ICache<T> {
 
     const nowTimestamp = new Date().getTime();
     if (nowTimestamp > data.expireAt) {
-      delete this.cache[key];
+      await this.delete(key);
       return undefined;
     }
 
     return data.value;
+  }
+
+  async delete (key: string): Promise<void> {
+    delete this.cache[key];
   }
 }

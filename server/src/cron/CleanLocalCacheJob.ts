@@ -4,9 +4,9 @@ import { logging } from '../utils/logging';
 
 const NAMESPACE = 'CleanLocalCacheJob';
 
-export const CleanLocalCacheJob = new CronJob('0 * * * * *', function () {
+export const CleanLocalCacheJob = new CronJob('0 * * * * *', async function () {
   try {
-    LocalCache.deleteExpired();
+    await LocalCache.deleteExpired();
   } catch (error) {
     logging.error(NAMESPACE, error?.message, error);
   }
