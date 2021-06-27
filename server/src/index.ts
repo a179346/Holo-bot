@@ -18,7 +18,7 @@ async function start () {
 
     await Jobs.start();
 
-    await bot.init(config.DISCORD_BOT.TOKEN);
+    await bot.init(config.DISCORD_BOT.TOKEN, config.DISCORD_BOT.USER_ID);
   } catch (error) {
     logging.error(NAMESPACE, (error as Error).message, error);
   }

@@ -1,45 +1,62 @@
-import { Client } from 'discord.js';
-import { ReplyError } from './ReplyError';
-import { ServiceSet } from './ServiceSet';
+import { Client, Intents } from 'discord.js';
+import { CommandSet } from './CommandSet';
 import { logging } from '../utils/logging';
+import { Client as InteractionsClient } from 'discord-slash-commands-client';
+import { interaction } from '../interface/interaction';
+import { ReplyError } from './ReplyError';
 
 const NAMESPACE = 'BOT';
 
 class Bot {
-  private serviceSets: ServiceSet[];
+  private commandSet: CommandSet;
   private client: Client;
 
-  constructor (serviceSets: ServiceSet[]) {
-    this.client = new Client();
-    this.serviceSets = serviceSets;
+  constructor (commandSet: CommandSet) {
+    this.client = new Client({
+      intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES ],
+      messageCacheLifetime: 150,
+      messageSweepInterval: 150,
+    });
+    this.commandSet = commandSet;
   }
 
-  public async init (discordToken: string) {
-    for (const serviceSet of this.serviceSets) {
-      await serviceSet.init();
-    }
+  public async init (discordToken: string, discordBotUserId: string) {
+    this.client.interactions = new InteractionsClient(discordToken, discordBotUserId);
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
-    this.client.on('ready', () => {
+    this.client.on('ready', async () => {
       logging.info(NAMESPACE, `Logged in to discord as ${this.client.user?.tag}!`);
+
+      // await this.client.interactions.deleteCommand('interaction id');
+
+      const commands = await this.client.interactions.getCommands({});
+      // console.log(commands);
+      if (Array.isArray(commands) && commands.length < this.commandSet.commands.length) {
+        try {
+          for (const command of this.commandSet.commands) {
+            await this.client.interactions.createCommand(command.options);
+          }
+        } catch (error) {
+          logging.error(NAMESPACE, JSON.stringify(error?.response?.data));
+        }
+      }
     });
 
-    this.client.on('message', async (msg) => {
+
+    this.client.on('interactionCreate', async (interaction: interaction) => {
       try {
-        if (msg.author.bot) return;
-        const content = msg.content;
-        const serviceSet = this.serviceSets.find((serviceSet) => serviceSet.checkContent(content));
-        if (!serviceSet) return;
+        const command = this.commandSet.getCommand(interaction.name);
+        if (!command)
+          throw new ReplyError('Unknown command: ' + interaction.name);
 
-        const messages = content.match(/[^ ]+/g);
-        if (!messages || messages.length === 0) return;
-
-        await serviceSet.runEvent(msg, messages);
+        await command.run(interaction);
       } catch (error) {
         if (error instanceof ReplyError)
-          msg.reply(error.message);
-        else
+          interaction.reply(error.message, true);
+        else {
+          interaction.reply('Unknown error occurred...', true);
           logging.error(NAMESPACE, error?.message, { error });
+        }
       }
     });
 
