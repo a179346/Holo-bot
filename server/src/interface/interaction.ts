@@ -19,7 +19,13 @@ interface BooleanOption {
   name: string;
 }
 
-type OptionUnit = SubcommandOption | StringOption | BooleanOption;
+interface RoleOption {
+  value: string;
+  type: CommandOptionType.ROLE;
+  name: string;
+}
+
+type OptionUnit = SubcommandOption | StringOption | BooleanOption | RoleOption;
 
 type interfaceOption = OptionUnit[] | null;
 

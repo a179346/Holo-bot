@@ -28,7 +28,8 @@ class Bot {
       // await this.client.interactions.deleteCommand('interaction id');
 
       const commands = await this.client.interactions.getCommands({});
-      if (Array.isArray(commands) && commands.length === 0) {
+      // console.log(commands);
+      if (Array.isArray(commands) && commands.length < this.commandSet.commands.length) {
         try {
           for (const command of this.commandSet.commands) {
             await this.client.interactions.createCommand(command.options);
@@ -42,6 +43,9 @@ class Bot {
 
     this.client.on('interactionCreate', async (interaction: interaction) => {
       try {
+        // console.log(interaction.guild.roles);
+        // console.log(interaction.guild.ownerID);
+        // console.log(interaction.author?.id);
         const command = this.commandSet.getCommand(interaction.name);
         if (!command)
           throw new ReplyError('Unknown command: ' + interaction.name);

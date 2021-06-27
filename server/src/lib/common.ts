@@ -1,3 +1,5 @@
+import { ApplicationCommandOptionChoice } from 'discord-slash-commands-client';
+
 function delay (delayMs: number): Promise<null> {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -31,10 +33,25 @@ function twitterUserUrl (twitterLink: string) {
   return 'https://twitter.com/' + twitterLink;
 }
 
+function enumToChoices (enumVal: {[key: string]: any}): ApplicationCommandOptionChoice[] {
+  const choices = [];
+  for (const key in enumVal) {
+    if (Object.prototype.hasOwnProperty.call(enumVal, key)) {
+      choices.push({
+        name: key,
+        value: enumVal[key],
+      });
+    }
+  }
+
+  return choices;
+}
+
 export const Lib = {
   delay,
   retry,
   youtubeChannelUrl,
   youtubeVideoUrl,
   twitterUserUrl,
+  enumToChoices,
 };
