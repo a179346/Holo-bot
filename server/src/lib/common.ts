@@ -1,4 +1,5 @@
 import { ApplicationCommandOptionChoice } from 'discord-slash-commands-client';
+import { Snowflake } from 'discord.js';
 import { PermissionDao } from '../dao/Permission';
 import { PermissionType } from '../entity/permission';
 import { interaction } from '../interface/interaction';
@@ -60,11 +61,16 @@ async function checkPermission (interaction: interaction, permissionType: Permis
   const permissions = await PermissionDao.list(interaction.channel.id, permissionType);
   const member = await interaction.member.fetch(true);
   for (const permission of permissions) {
-    if (member.roles.cache.has(permission.role_id))
+    if (member.roles.cache.has(ToSnowflake(permission.role_id)))
       return true;
   }
 
   return false;
+}
+
+function ToSnowflake (str: string): Snowflake {
+  // return `${BigInt(str)}`;
+  return str;
 }
 
 export const Lib = {
@@ -75,4 +81,5 @@ export const Lib = {
   twitterUserUrl,
   enumToChoices,
   checkPermission,
+  ToSnowflake,
 };

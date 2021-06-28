@@ -27,7 +27,7 @@ const PermissionRemoveSubcommand = new Subcommnad({
     required: true,
   }, ]
 }, async (interaction, body: PermissionRemoveBody) => {
-  const roleName = interaction.guild.roles.cache.get(body.role)?.name;
+  const roleName = interaction.guild.roles.cache.get(Lib.ToSnowflake(body.role))?.name;
   if (!roleName)
     throw new ReplyError('Unknown Role Id: "' + body.role + '". Please retry later.');
 
