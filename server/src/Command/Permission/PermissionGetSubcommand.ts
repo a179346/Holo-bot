@@ -32,7 +32,7 @@ const PermissionGetSubcommand = new Subcommnad({
   let info = '【Permission for "' + body['permission-type'] + '"】';
 
   for (const permission of permissions) {
-    const roleName = interaction.guild.roles.cache.get(permission.role_id)?.name;
+    const roleName = interaction.guild.roles.cache.get(Lib.ToSnowflake(permission.role_id))?.name;
     if (roleName)
       info += prefix + roleName;
   }

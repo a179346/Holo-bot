@@ -4,6 +4,7 @@ import { logging } from '../utils/logging';
 import { Client as InteractionsClient } from 'discord-slash-commands-client';
 import { interaction } from '../interface/interaction';
 import { ReplyError } from './ReplyError';
+import { Lib } from '../lib/common';
 
 const NAMESPACE = 'BOT';
 
@@ -64,7 +65,7 @@ class Bot {
   }
 
   public async sendMessageToChannel (discord_channel_id: string, message: string) {
-    const channel = this.client.channels.cache.get(discord_channel_id);
+    const channel = this.client.channels.cache.get(Lib.ToSnowflake(discord_channel_id));
     if (channel?.isText())
       await channel.send(message);
   }
