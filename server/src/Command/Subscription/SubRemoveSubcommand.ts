@@ -14,7 +14,7 @@ const SubRemoveSubcommand = new Subcommnad({
   type: CommandOptionType.SUB_COMMAND,
   options: [ {
     name: 'name',
-    description: 'holomem\'s name',
+    description: 'holomem\'s name Ex. "okayu"',
     type: CommandOptionType.STRING,
     required: true,
   } ]
