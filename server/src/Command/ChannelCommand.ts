@@ -1,7 +1,7 @@
-import { Command } from '../Class/Command';
+import { Layer2Command } from '../Class/Layer2Command';
 import { ChannelGetSubcommand } from './Channel/ChannelGetSubcommand';
 
-const ChannelCommand = new Command({
+const ChannelCommand = new Layer2Command({
   name: 'channel',
   description: 'Everything about Hololive\'s channels.',
 });
