@@ -22,6 +22,8 @@ class Bot {
   }
 
   public async init (discordToken: string, discordBotUserId: string) {
+    await this.commandSet.init();
+
     this.client.interactions = new InteractionsClient(discordToken, discordBotUserId);
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
