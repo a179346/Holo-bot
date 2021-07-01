@@ -22,6 +22,8 @@ class Bot {
   }
 
   public async init (discordToken: string, discordBotUserId: string) {
+    await this.commandSet.init();
+
     this.client.interactions = new InteractionsClient(discordToken, discordBotUserId);
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
@@ -32,9 +34,9 @@ class Bot {
 
       const commands = await this.client.interactions.getCommands({});
       // console.log(commands);
-      if (Array.isArray(commands) && commands.length < this.commandSet.commands.length) {
+      if (Array.isArray(commands) && commands.length < this.commandSet.size) {
         try {
-          for (const command of this.commandSet.commands) {
+          for (const command of this.commandSet.array()) {
             await this.client.interactions.createCommand(command.options);
           }
         } catch (error) {
@@ -46,7 +48,7 @@ class Bot {
 
     this.client.on('interactionCreate', async (interaction: interaction) => {
       try {
-        const command = this.commandSet.getCommand(interaction.name);
+        const command = this.commandSet.get(interaction.name);
         if (!command)
           throw new ReplyError('Unknown command: ' + interaction.name);
 

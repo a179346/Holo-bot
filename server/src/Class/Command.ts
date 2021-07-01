@@ -1,46 +1,46 @@
-import { Subcommnad } from './Subcommand';
 import { ApplicationOptions } from 'discord-slash-commands-client';
-import { interaction } from '../interface/interaction';
-import { ReplyError } from './ReplyError';
 import { CommandOptionType } from '../interface/CommandOptionType';
+import { interaction, interfaceOption } from '../interface/interaction';
+import { ReplyError } from './ReplyError';
 
-type CheckEvent = (interaction: interaction) => Promise<void>;
-
+type RunEvent = (interaction: interaction, body: any) => Promise<void>;
 
 export class Command {
   public options: ApplicationOptions;
-  private subcommands: Subcommnad[] = [];
-  private subcommandMap: Map<string, Subcommnad> = new Map();
-  private checkEvent?: CheckEvent;
+  protected runEvent: RunEvent;
+  private initFunction?: () => Promise<void>;
 
-
-  constructor (options: ApplicationOptions, checkEvent?: CheckEvent) {
+  constructor (options: ApplicationOptions, runEvent: RunEvent) {
     this.options = options;
-    this.checkEvent = checkEvent;
-  }
-
-  public addSubcommand (subcommand: Subcommnad) {
-    this.subcommands.push(subcommand);
-    if (!this.options.options)
-      this.options.options = [];
-
-    this.options.options.push(subcommand.options);
-    this.subcommandMap.set(subcommand.options.name, subcommand);
+    this.runEvent = runEvent;
   }
 
   public async run (interaction: interaction) {
-    if (interaction.options?.[0].type !== CommandOptionType.SUB_COMMAND)
-      throw new ReplyError('Invalid command: ' + interaction.name);
+    const body = this.parseOptions(interaction.options, interaction.name);
+    await this.runEvent(interaction, body);
+  }
 
-    const subcommandName = interaction.options?.[0].name;
-    if (!subcommandName)
-      throw new ReplyError('Unknown command: ' + interaction.name);
-    const subcommand = this.subcommandMap.get(subcommandName);
-    if (!subcommand)
-      throw new ReplyError('Unknown subcommand: ' + subcommandName);
+  public async setInitFunction (initFunction: () => Promise<void>) {
+    this.initFunction = initFunction;
+  }
 
-    if (this.checkEvent)
-      await this.checkEvent(interaction);
-    await subcommand.run(interaction);
+  public async init () {
+    if (this.initFunction)
+      await this.initFunction();
+  }
+
+  protected parseOptions (interfaceOption: interfaceOption, interactionName: string) {
+    if (!interfaceOption)
+      throw new ReplyError('Invalid command: ' + interactionName);
+
+    const body: any = {};
+
+    for (const option of interfaceOption) {
+      if (option.type === CommandOptionType.SUB_COMMAND)
+        throw new ReplyError('Invalid command: ' + interactionName);
+      body[option.name] = option.value;
+    }
+
+    return body;
   }
 }
