@@ -1,11 +1,13 @@
 import { ApplicationOptions } from 'discord-slash-commands-client';
-import { interaction } from '../interface/interaction';
+import { CommandOptionType } from '../interface/CommandOptionType';
+import { interaction, interfaceOption } from '../interface/interaction';
+import { ReplyError } from './ReplyError';
 
-type RunEvent = (interaction: interaction) => Promise<void>;
+type RunEvent = (interaction: interaction, body: any) => Promise<void>;
 
 export class Command {
   public options: ApplicationOptions;
-  private runEvent: RunEvent;
+  protected runEvent: RunEvent;
   private initFunction?: () => Promise<void>;
 
   constructor (options: ApplicationOptions, runEvent: RunEvent) {
@@ -14,7 +16,8 @@ export class Command {
   }
 
   public async run (interaction: interaction) {
-    await this.runEvent(interaction);
+    const body = this.parseOptions(interaction.options, interaction.name);
+    await this.runEvent(interaction, body);
   }
 
   public async setInitFunction (initFunction: () => Promise<void>) {
@@ -24,5 +27,20 @@ export class Command {
   public async init () {
     if (this.initFunction)
       await this.initFunction();
+  }
+
+  protected parseOptions (interfaceOption: interfaceOption, interactionName: string) {
+    if (!interfaceOption)
+      throw new ReplyError('Invalid command: ' + interactionName);
+
+    const body: any = {};
+
+    for (const option of interfaceOption) {
+      if (option.type === CommandOptionType.SUB_COMMAND)
+        throw new ReplyError('Invalid command: ' + interactionName);
+      body[option.name] = option.value;
+    }
+
+    return body;
   }
 }

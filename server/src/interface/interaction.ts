@@ -27,7 +27,7 @@ interface RoleOption {
 
 type OptionUnit = SubcommandOption | StringOption | BooleanOption | RoleOption;
 
-type interfaceOption = OptionUnit[] | null;
+export type interfaceOption = OptionUnit[] | null;
 
 export interface interaction {
   id: string;

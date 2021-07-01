@@ -28,11 +28,11 @@ export class Layer2Command extends Command {
     this.subcommandMap.set(subcommand.options.name, subcommand);
   }
 
-  private async layer2run (interaction: interaction) {
+  private async layer2run (interaction: interaction, body: any) {
     if (interaction.options?.[0].type !== CommandOptionType.SUB_COMMAND)
       throw new ReplyError('Invalid command: ' + interaction.name);
 
-    const subcommandName = interaction.options?.[0].name;
+    const subcommandName = interaction.options[0].name;
     if (!subcommandName)
       throw new ReplyError('Unknown command: ' + interaction.name);
     const subcommand = this.subcommandMap.get(subcommandName);
@@ -41,6 +41,15 @@ export class Layer2Command extends Command {
 
     if (this.checkEvent)
       await this.checkEvent(interaction);
-    await subcommand.run(interaction);
+    await subcommand.run(interaction, body);
+  }
+
+
+  public async run (interaction: interaction) {
+    if (interaction.options?.[0].type !== CommandOptionType.SUB_COMMAND)
+      throw new ReplyError('Invalid command: ' + interaction.name);
+
+    const body = this.parseOptions(interaction.options[0].options, interaction.name);
+    await this.runEvent(interaction, body);
   }
 }

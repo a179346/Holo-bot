@@ -3,6 +3,10 @@ import { CommandOptionType } from '../interface/CommandOptionType';
 import { promises as fsPromises } from 'fs';
 import * as path from 'path';
 
+interface AboutBody {
+  'private-reply': boolean;
+}
+
 let about: string;
 
 export const AboutCommand = new Command({
@@ -14,8 +18,8 @@ export const AboutCommand = new Command({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction) => {
-  interaction.reply(about, true);
+}, async (interaction, body: AboutBody) => {
+  interaction.reply(about, body['private-reply']);
 });
 
 AboutCommand.setInitFunction(async () => {
