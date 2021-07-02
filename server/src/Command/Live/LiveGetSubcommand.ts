@@ -57,7 +57,10 @@ const LiveGetSubcommand = new Subcommnad({
     }
   }
 
-  interaction.reply(info, body['private-reply']);
+  interaction.reply({
+    content: info,
+    ephemeral: body['private-reply'],
+  });
 });
 
 export {

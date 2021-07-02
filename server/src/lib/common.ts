@@ -1,8 +1,7 @@
-import { ApplicationCommandOptionChoice } from 'discord-slash-commands-client';
-import { Snowflake } from 'discord.js';
+import { CommandInteraction, GuildMember } from 'discord.js';
+import { Snowflake, ApplicationCommandOptionChoice } from 'discord.js';
 import { PermissionDao } from '../dao/Permission';
 import { PermissionType } from '../entity/permission';
-import { interaction } from '../interface/interaction';
 
 function delay (delayMs: number): Promise<null> {
   return new Promise((resolve) => {
@@ -51,14 +50,19 @@ function enumToChoices (enumVal: {[key: string]: any}): ApplicationCommandOption
   return choices;
 }
 
-async function checkPermission (interaction: interaction, permissionType: PermissionType, ownerDefaultEnable: boolean): Promise<boolean> {
-  if (ownerDefaultEnable && interaction.guild.ownerID === interaction.author?.id)
+async function checkPermission (interaction: CommandInteraction, permissionType: PermissionType, ownerDefaultEnable: boolean): Promise<boolean> {
+  // channel owner
+  if (ownerDefaultEnable && interaction.guild?.ownerID === interaction.user.id)
     return true;
 
-  if (!interaction.member)
+  // DM
+  if (interaction.guild === null)
+    return true;
+
+  if (!interaction.member || !(interaction.member instanceof GuildMember))
     return false;
 
-  const permissions = await PermissionDao.list(interaction.channel.id, permissionType);
+  const permissions = await PermissionDao.list(interaction.channelID, permissionType);
   const member = await interaction.member.fetch(true);
   for (const permission of permissions) {
     if (member.roles.cache.has(ToSnowflake(permission.role_id)))
@@ -69,8 +73,8 @@ async function checkPermission (interaction: interaction, permissionType: Permis
 }
 
 function ToSnowflake (str: string): Snowflake {
-  // return `${BigInt(str)}`;
-  return str;
+  return `${BigInt(str)}`;
+  // return str;
 }
 
 export const Lib = {

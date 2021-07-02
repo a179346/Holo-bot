@@ -27,13 +27,16 @@ const PermissionAddSubcommand = new Subcommnad({
     required: true,
   }, ]
 }, async (interaction, body: PermissionAddBody) => {
-  const roleName = interaction.guild.roles.cache.get(Lib.ToSnowflake(body.role))?.name;
+  const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(body.role))?.name;
   if (!roleName)
     throw new ReplyError('Unknown Role Id: "' + body.role + '". Please retry later.');
 
-  await PermissionDao.insert(interaction.channel.id, body['permission-type'], body.role);
+  await PermissionDao.insert(interaction.channelID, body['permission-type'], body.role);
 
-  interaction.reply('Permission added: "' + roleName + '" for "' + body['permission-type'] + '"', false);
+  interaction.reply({
+    content: 'Permission added: "' + roleName + '" for "' + body['permission-type'] + '"',
+    ephemeral: false,
+  });
 });
 
 export {

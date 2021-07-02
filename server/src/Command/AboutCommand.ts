@@ -19,7 +19,10 @@ export const AboutCommand = new Command({
     required: true,
   }, ]
 }, async (interaction, body: AboutBody) => {
-  interaction.reply(about, body['private-reply']);
+  interaction.reply({
+    content: about,
+    ephemeral: body['private-reply'],
+  });
 });
 
 AboutCommand.setInitFunction(async () => {

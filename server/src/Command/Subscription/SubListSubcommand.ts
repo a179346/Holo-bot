@@ -18,7 +18,7 @@ const SubListSubcommand = new Subcommnad({
     required: true,
   }, ],
 }, async (interaction, body: SubListBody) => {
-  const list = await SubscriptionDao.list(interaction.channel.id);
+  const list = await SubscriptionDao.list(interaction.channelID);
 
   let info = '【Subscription List】';
   if (list.length === 0)
@@ -29,7 +29,10 @@ const SubListSubcommand = new Subcommnad({
     }
   }
 
-  interaction.reply(info, body['private-reply']);
+  interaction.reply({
+    content: info,
+    ephemeral: body['private-reply'],
+  });
 });
 
 function formatSub (sub: subscription) {

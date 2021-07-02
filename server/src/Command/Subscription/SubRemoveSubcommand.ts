@@ -23,9 +23,12 @@ const SubRemoveSubcommand = new Subcommnad({
   if (!channelNicknameVal)
     throw new ReplyError('Holomem not found: ' + body.name);
 
-  await SubscriptionDao.remove(interaction.channel.id, channelNicknameVal.channel.id);
+  await SubscriptionDao.remove(interaction.channelID, channelNicknameVal.channel.id);
 
-  interaction.reply('Subscription removed: 【' + channelNicknameVal.channel.name + '】', false);
+  interaction.reply({
+    content: 'Subscription removed: 【' + channelNicknameVal.channel.name + '】',
+    ephemeral: false,
+  });
 });
 
 export {

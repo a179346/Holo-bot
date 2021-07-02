@@ -27,13 +27,16 @@ const PermissionRemoveSubcommand = new Subcommnad({
     required: true,
   }, ]
 }, async (interaction, body: PermissionRemoveBody) => {
-  const roleName = interaction.guild.roles.cache.get(Lib.ToSnowflake(body.role))?.name;
+  const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(body.role))?.name;
   if (!roleName)
     throw new ReplyError('Unknown Role Id: "' + body.role + '". Please retry later.');
 
-  await PermissionDao.remove(interaction.channel.id, body['permission-type'], body.role);
+  await PermissionDao.remove(interaction.channelID, body['permission-type'], body.role);
 
-  interaction.reply('Permission removed: "' + roleName + '" for "' + body['permission-type'] + '"', false);
+  interaction.reply({
+    content: 'Permission removed: "' + roleName + '" for "' + body['permission-type'] + '"',
+    ephemeral: false,
+  });
 });
 
 export {

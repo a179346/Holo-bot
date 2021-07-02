@@ -26,18 +26,21 @@ const PermissionGetSubcommand = new Subcommnad({
     required: true,
   }, ]
 }, async (interaction, body: PermissionGetBody) => {
-  const permissions = await PermissionDao.list(interaction.channel.id, body['permission-type']);
+  const permissions = await PermissionDao.list(interaction.channelID, body['permission-type']);
 
   const prefix = '\n◎    ';
   let info = '【Permission for "' + body['permission-type'] + '"】';
 
   for (const permission of permissions) {
-    const roleName = interaction.guild.roles.cache.get(Lib.ToSnowflake(permission.role_id))?.name;
+    const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(permission.role_id))?.name;
     if (roleName)
       info += prefix + roleName;
   }
 
-  interaction.reply(info, body['private-reply']);
+  interaction.reply({
+    content: info,
+    ephemeral: body['private-reply'],
+  });
 });
 
 export {
