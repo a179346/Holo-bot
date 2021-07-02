@@ -23,9 +23,12 @@ const SubAddSubcommand = new Subcommnad({
   if (!channelNicknameVal)
     throw new ReplyError('Holomem not found: ' + body.name);
 
-  await SubscriptionDao.insert(interaction.channel.id, channelNicknameVal.channel.id);
+  await SubscriptionDao.insert(interaction.channelID, channelNicknameVal.channel.id);
 
-  interaction.reply('Subscription added: 【' + channelNicknameVal.channel.name + '】', false);
+  interaction.reply({
+    content: 'Subscription added: 【' + channelNicknameVal.channel.name + '】',
+    ephemeral: false,
+  });
 });
 
 export {

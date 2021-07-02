@@ -1,8 +1,6 @@
 import { Client, Intents } from 'discord.js';
 import { CommandSet } from './CommandSet';
 import { logging } from '../utils/logging';
-import { Client as InteractionsClient } from 'discord-slash-commands-client';
-import { interaction } from '../interface/interaction';
 import { ReplyError } from './ReplyError';
 import { Lib } from '../lib/common';
 
@@ -24,20 +22,20 @@ class Bot {
   public async init (discordToken: string, discordBotUserId: string) {
     await this.commandSet.init();
 
-    this.client.interactions = new InteractionsClient(discordToken, discordBotUserId);
-
     logging.info(NAMESPACE, 'Logging in to discord ...');
     this.client.on('ready', async () => {
       logging.info(NAMESPACE, `Logged in to discord as ${this.client.user?.tag}!`);
+      if (!this.client.application)
+        throw new Error('No client.application');
 
-      // await this.client.interactions.deleteCommand('interaction id');
+      // await this.client.application.commands.delete(Lib.ToSnowflake('interaction id'));
 
-      const commands = await this.client.interactions.getCommands({});
+      const commands = await this.client.application.commands.fetch();
       // console.log(commands);
-      if (Array.isArray(commands) && commands.length < this.commandSet.size) {
+      if (commands.size < this.commandSet.size) {
         try {
           for (const command of this.commandSet.array()) {
-            await this.client.interactions.createCommand(command.options);
+            await this.client.application.commands.create(command.options);
           }
         } catch (error) {
           logging.error(NAMESPACE, JSON.stringify(error?.response?.data));
@@ -46,18 +44,26 @@ class Bot {
     });
 
 
-    this.client.on('interactionCreate', async (interaction: interaction) => {
+    this.client.on('interaction', async (interaction) => {
+      if (!interaction.isCommand())
+        return;
       try {
-        const command = this.commandSet.get(interaction.name);
+        const command = this.commandSet.get(interaction.commandName);
         if (!command)
-          throw new ReplyError('Unknown command: ' + interaction.name);
+          throw new ReplyError('Unknown command: ' + interaction.commandName);
 
         await command.run(interaction);
       } catch (error) {
         if (error instanceof ReplyError)
-          interaction.reply(error.message, true);
+          interaction.reply({
+            content: error.message,
+            ephemeral: true,
+          });
         else {
-          interaction.reply('Unknown error occurred...', true);
+          interaction.reply({
+            content: 'Unknown error occurred...',
+            ephemeral: true,
+          });
           logging.error(NAMESPACE, error?.message, { error });
         }
       }

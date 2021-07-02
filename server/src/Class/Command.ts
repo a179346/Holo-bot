@@ -1,22 +1,21 @@
-import { ApplicationOptions } from 'discord-slash-commands-client';
+import { ApplicationCommandData, CommandInteraction, CommandInteractionOption, Collection } from 'discord.js';
 import { CommandOptionType } from '../interface/CommandOptionType';
-import { interaction, interfaceOption } from '../interface/interaction';
 import { ReplyError } from './ReplyError';
 
-type RunEvent = (interaction: interaction, body: any) => Promise<void>;
+type RunEvent = (interaction: CommandInteraction, body: any) => Promise<void>;
 
 export class Command {
-  public options: ApplicationOptions;
+  public options: ApplicationCommandData;
   protected runEvent: RunEvent;
   private initFunction?: () => Promise<void>;
 
-  constructor (options: ApplicationOptions, runEvent: RunEvent) {
+  constructor (options: ApplicationCommandData, runEvent: RunEvent) {
     this.options = options;
     this.runEvent = runEvent;
   }
 
-  public async run (interaction: interaction) {
-    const body = this.parseOptions(interaction.options, interaction.name);
+  public async run (interaction: CommandInteraction) {
+    const body = this.parseOptions(interaction.options, interaction.commandName);
     await this.runEvent(interaction, body);
   }
 
@@ -29,13 +28,13 @@ export class Command {
       await this.initFunction();
   }
 
-  protected parseOptions (interfaceOption: interfaceOption, interactionName: string) {
+  protected parseOptions (interfaceOption: Collection<string, CommandInteractionOption>, interactionName: string) {
     if (!interfaceOption)
       throw new ReplyError('Invalid command: ' + interactionName);
 
     const body: any = {};
 
-    for (const option of interfaceOption) {
+    for (const option of interfaceOption.array()) {
       if (option.type === CommandOptionType.SUB_COMMAND)
         throw new ReplyError('Invalid command: ' + interactionName);
       body[option.name] = option.value;

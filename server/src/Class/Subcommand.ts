@@ -1,7 +1,6 @@
-import { ApplicationCommandOption } from 'discord-slash-commands-client';
-import { interaction } from '../interface/interaction';
+import { CommandInteraction, ApplicationCommandOption } from 'discord.js';
 
-type SubcommandEvent = (interaction: interaction, body: any) => Promise<void>;
+type SubcommandEvent = (interaction: CommandInteraction, body: any) => Promise<void>;
 
 export class Subcommnad {
   public options: ApplicationCommandOption;
@@ -12,7 +11,7 @@ export class Subcommnad {
     this.subcommandEvent = subcommandEvent;
   }
 
-  public async run (interaction: interaction, body: any): Promise<void> {
+  public async run (interaction: CommandInteraction, body: any): Promise<void> {
     await this.subcommandEvent(interaction, body);
   }
 }

@@ -1,11 +1,10 @@
 import { Subcommnad } from './Subcommand';
-import { ApplicationOptions } from 'discord-slash-commands-client';
-import { interaction } from '../interface/interaction';
 import { ReplyError } from './ReplyError';
 import { CommandOptionType } from '../interface/CommandOptionType';
 import { Command } from './Command';
+import { ApplicationCommandData, CommandInteraction } from 'discord.js';
 
-type CheckEvent = (interaction: interaction) => Promise<void>;
+type CheckEvent = (interaction: CommandInteraction) => Promise<void>;
 
 export class Layer2Command extends Command {
   private subcommands: Subcommnad[] = [];
@@ -13,7 +12,7 @@ export class Layer2Command extends Command {
   private checkEvent?: CheckEvent;
 
 
-  constructor (options: ApplicationOptions, checkEvent?: CheckEvent) {
+  constructor (options: ApplicationCommandData, checkEvent?: CheckEvent) {
     super(options, Layer2Command.prototype.layer2run);
     this.options = options;
     this.checkEvent = checkEvent;
@@ -28,13 +27,14 @@ export class Layer2Command extends Command {
     this.subcommandMap.set(subcommand.options.name, subcommand);
   }
 
-  private async layer2run (interaction: interaction, body: any) {
-    if (interaction.options?.[0].type !== CommandOptionType.SUB_COMMAND)
-      throw new ReplyError('Invalid command: ' + interaction.name);
+  private async layer2run (interaction: CommandInteraction, body: any) {
+    const commamdOptions = interaction.options.first();
+    if (!commamdOptions || commamdOptions.type !== CommandOptionType.SUB_COMMAND)
+      throw new ReplyError('Invalid command: ' + interaction.commandName);
 
-    const subcommandName = interaction.options[0].name;
+    const subcommandName = commamdOptions.name;
     if (!subcommandName)
-      throw new ReplyError('Unknown command: ' + interaction.name);
+      throw new ReplyError('Unknown command: ' + interaction.commandName);
     const subcommand = this.subcommandMap.get(subcommandName);
     if (!subcommand)
       throw new ReplyError('Unknown subcommand: ' + subcommandName);
@@ -45,11 +45,12 @@ export class Layer2Command extends Command {
   }
 
 
-  public async run (interaction: interaction) {
-    if (interaction.options?.[0].type !== CommandOptionType.SUB_COMMAND)
-      throw new ReplyError('Invalid command: ' + interaction.name);
+  public async run (interaction: CommandInteraction) {
+    const commamdOptions = interaction.options.first();
+    if (!commamdOptions || !commamdOptions.options || commamdOptions.type !== CommandOptionType.SUB_COMMAND)
+      throw new ReplyError('Invalid command: ' + interaction.commandName);
 
-    const body = this.parseOptions(interaction.options[0].options, interaction.name);
+    const body = this.parseOptions(commamdOptions.options, interaction.commandName);
     await this.runEvent(interaction, body);
   }
 }
