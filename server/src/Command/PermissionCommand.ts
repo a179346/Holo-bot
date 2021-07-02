@@ -10,6 +10,8 @@ const PermissionCommand = new Layer2Command({
   name: 'permission',
   description: 'Get or edit permissions for a role who have access to Holo-bot advanced commands.',
 }, async (interaction) => {
+  if (interaction.guild === null)
+    throw new ReplyError('Permission is not available in DM.');
   const permissionResult = await Lib.checkPermission(interaction, PermissionType.permission, true);
   if (!permissionResult)
     throw new ReplyError('Permission denied. Please contact the channel owner.');
