@@ -1,8 +1,8 @@
-import { Client, Intents } from 'discord.js';
+import { Client, Intents, Snowflake } from 'discord.js';
 import { CommandSet } from './CommandSet';
 import { logging } from '../utils/logging';
 import { ReplyError } from './ReplyError';
-import { Lib } from '../lib/common';
+// import { Lib } from '../lib/common';
 
 const NAMESPACE = 'BOT';
 
@@ -73,8 +73,8 @@ class Bot {
     await this.client.login(discordToken);
   }
 
-  public async sendMessageToChannel (discord_channel_id: string, message: string) {
-    const channel = await this.client.channels.fetch(Lib.ToSnowflake(discord_channel_id), {
+  public async sendMessageToChannel (discord_channel_id: Snowflake, message: string) {
+    const channel = await this.client.channels.fetch(discord_channel_id, {
       cache: true,
       force: false,
     });

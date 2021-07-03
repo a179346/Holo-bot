@@ -11,7 +11,7 @@ export class NestedCommand extends Command {
   private checkEvent?: CheckEvent;
 
   constructor (options: ApplicationCommandData, subcommands: Subcommand[]) {
-    super(options, NestedCommand.prototype.layer2run);
+    super(options, NestedCommand.prototype.nestedRun);
     for (const subcommand of subcommands) {
       this.addSubcommand(subcommand);
     }
@@ -29,7 +29,7 @@ export class NestedCommand extends Command {
     this.subcommandMap.set(subcommand.options.name, subcommand);
   }
 
-  private async layer2run (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
+  private async nestedRun (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
     const commamdOptions = options.first();
     if (!commamdOptions || !commamdOptions.options || commamdOptions.type !== CommandOptionType.SUB_COMMAND)
       throw new ReplyError('Invalid command: ' + interaction.commandName);
@@ -42,7 +42,7 @@ export class NestedCommand extends Command {
       throw new ReplyError('Unknown subcommand: ' + subcommandName);
 
     if (this.checkEvent)
-      await this.checkEvent(interaction, commamdOptions.options);
+      await this.checkEvent(interaction, options);
     await subcommand.run(interaction, commamdOptions.options);
   }
 }

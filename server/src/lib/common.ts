@@ -65,7 +65,7 @@ async function checkPermission (interaction: CommandInteraction, permissionType:
   const permissions = await PermissionDao.list(interaction.channelID, permissionType);
   const member = await interaction.member.fetch(true);
   for (const permission of permissions) {
-    if (member.roles.cache.has(ToSnowflake(permission.role_id)))
+    if (member.roles.cache.has(permission.role_id))
       return true;
   }
 

@@ -3,9 +3,10 @@ import { Repository } from 'typeorm';
 import { permission, PermissionType } from '../entity/permission';
 import { LocalCache } from '../cache/LocalCache';
 import { CacheOptionType, ICache } from '../cache/ICahce';
+import { Snowflake } from 'discord.js';
 
 const cache: ICache<permission[]> = new LocalCache();
-const cacheKey = (discord_channel_id: string, permissionType: PermissionType) => discord_channel_id + '-' + permissionType;
+const cacheKey = (discord_channel_id: Snowflake, permissionType: PermissionType) => discord_channel_id + '-' + permissionType;
 // 5 MINUTES
 const EXPIRE_MS = 1000 * 60 * 5;
 
@@ -14,7 +15,7 @@ class PermissionDao {
     return TypeOrmConnection.connection.getRepository(permission);
   }
 
-  public async list (discord_channel_id: string, permissionType: PermissionType): Promise<permission[]> {
+  public async list (discord_channel_id: Snowflake, permissionType: PermissionType): Promise<permission[]> {
     const key = cacheKey(discord_channel_id, permissionType);
     const cacheVal = await cache.get(key);
     if (cacheVal !== undefined)
@@ -33,7 +34,7 @@ class PermissionDao {
     return permissions;
   }
 
-  public async remove (discord_channel_id: string, permissionType: PermissionType, roleId: string): Promise<void> {
+  public async remove (discord_channel_id: Snowflake, permissionType: PermissionType, roleId: Snowflake): Promise<void> {
     await this.repository.delete({
       discord_channel_id,
       permission_type: permissionType,
@@ -44,7 +45,7 @@ class PermissionDao {
     await cache.delete(key);
   }
 
-  public async insert (discord_channel_id: string, permissionType: PermissionType, roleId: string): Promise<permission> {
+  public async insert (discord_channel_id: Snowflake, permissionType: PermissionType, roleId: Snowflake): Promise<permission> {
     const model = new permission();
 
     model.discord_channel_id = discord_channel_id;

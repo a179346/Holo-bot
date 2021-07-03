@@ -6,6 +6,6 @@ export class channel_nickname {
     @PrimaryColumn({ length: 128 })
     nickname!: string;
 
-    @ManyToOne(() => channel, (channel) => channel.nicknames)
+    @ManyToOne(() => channel)
     channel!: channel;
 }
