@@ -53,7 +53,7 @@ class Bot {
         if (!command)
           throw new ReplyError('Unknown command: ' + interaction.commandName);
 
-        await command.run(interaction);
+        await command.run(interaction, interaction.options);
       } catch (error) {
         if (error instanceof ReplyError)
           interaction.reply({

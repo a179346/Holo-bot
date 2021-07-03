@@ -1,10 +1,10 @@
 import { ReplyError } from '../../Class/ReplyError';
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { SubscriptionDao } from '../../dao/Subscription';
 import { subscription } from '../../entity/subscription';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
-const SubListSubcommand = new Subcommnad({
+const SubListSubcommand = new Subcommand({
   name: 'list',
   description: 'List current subscriptions.',
   type: CommandOptionType.SUB_COMMAND,
@@ -14,11 +14,8 @@ const SubListSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ],
-}, async (interaction) => {
-  const subCommandOptions = interaction.options.first()?.options;
-  if (!subCommandOptions)
-    throw new ReplyError('Invalid Options');
-  const privateReply = subCommandOptions.get('private-reply')?.value;
+}, async (interaction, options) => {
+  const privateReply = options.get('private-reply')?.value;
   if (typeof privateReply !== 'boolean')
     throw new ReplyError('Invalid Options: "private-reply"');
 

@@ -1,8 +1,8 @@
-import { CommandInteraction, ApplicationCommandOption } from 'discord.js';
+import { CommandInteraction, ApplicationCommandOption, Collection, CommandInteractionOption } from 'discord.js';
 
-type SubcommandEvent = (interaction: CommandInteraction) => Promise<void>;
+type SubcommandEvent = (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) => Promise<void>;
 
-export class Subcommnad {
+export class Subcommand {
   public readonly options: ApplicationCommandOption;
   private readonly subcommandEvent: SubcommandEvent;
 
@@ -11,7 +11,7 @@ export class Subcommnad {
     this.subcommandEvent = subcommandEvent;
   }
 
-  public async run (interaction: CommandInteraction): Promise<void> {
-    await this.subcommandEvent(interaction);
+  public async run (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>): Promise<void> {
+    await this.subcommandEvent(interaction, options);
   }
 }

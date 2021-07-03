@@ -1,12 +1,12 @@
-import { Layer2Command } from '../Class/Layer2Command';
+import { NestedCommand } from '../Class/NestedCommand';
 import { LiveGetSubcommand } from './Live/LiveGetSubcommand';
 
-const LiveCommand = new Layer2Command({
+const LiveCommand = new NestedCommand({
   name: 'live',
   description: 'Information about live, upcoming and recently ended streams.'
-});
-
-LiveCommand.addSubcommand(LiveGetSubcommand);
+}, [
+  LiveGetSubcommand,
+]);
 
 export  {
   LiveCommand,

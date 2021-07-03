@@ -1,4 +1,4 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { ReplyError } from '../../Class/ReplyError';
 import { ChannelNicknameDao } from '../../dao/ChannelNickname';
 import { LiveDao } from '../../dao/Live';
@@ -6,7 +6,7 @@ import { LiveStatus } from '../../entity/live';
 import { Lib } from '../../lib/common';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
-const LiveGetSubcommand = new Subcommnad({
+const LiveGetSubcommand = new Subcommand({
   name: 'get',
   description: 'Fetches live, upcoming and recently ended streams.',
   type: CommandOptionType.SUB_COMMAND,
@@ -21,12 +21,9 @@ const LiveGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction) => {
-  const subCommandOptions = interaction.options.first()?.options;
-  if (!subCommandOptions)
-    throw new ReplyError('Invalid Options');
-  const name = subCommandOptions.get('name')?.value;
-  const privateReply = subCommandOptions.get('private-reply')?.value;
+}, async (interaction, options) => {
+  const name = options.get('name')?.value;
+  const privateReply = options.get('private-reply')?.value;
   if (typeof name !== 'string')
     throw new ReplyError('Invalid Options: "name"');
   if (typeof privateReply !== 'boolean')

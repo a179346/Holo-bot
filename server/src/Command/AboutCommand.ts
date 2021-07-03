@@ -15,8 +15,8 @@ export const AboutCommand = new Command({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction) => {
-  const privateReply = interaction.options.get('private-reply')?.value;
+}, async (interaction, options) => {
+  const privateReply = options.get('private-reply')?.value;
   if (typeof privateReply !== 'boolean')
     throw new ReplyError('Invalid options: "private-reply"');
 

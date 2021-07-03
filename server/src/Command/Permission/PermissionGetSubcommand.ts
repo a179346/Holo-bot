@@ -1,11 +1,11 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 import { Lib } from '../../lib/common';
 import { PermissionType } from '../../entity/permission';
 import { PermissionDao } from '../../dao/Permission';
 import { ReplyError } from '../../Class/ReplyError';
 
-const PermissionGetSubcommand = new Subcommnad({
+const PermissionGetSubcommand = new Subcommand({
   name: 'get',
   description: 'Get roles who have access to a Holo-bot advanced command.',
   type: CommandOptionType.SUB_COMMAND,
@@ -21,12 +21,9 @@ const PermissionGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction) => {
-  const subCommandOptions = interaction.options.first()?.options;
-  if (!subCommandOptions)
-    throw new ReplyError('Invalid Options');
-  const permissionType = subCommandOptions.get('permission-type')?.value as PermissionType;
-  const privateReply = subCommandOptions.get('private-reply')?.value;
+}, async (interaction, options) => {
+  const permissionType = options.get('permission-type')?.value as PermissionType;
+  const privateReply = options.get('private-reply')?.value;
   if (!(Object.values(PermissionType).includes(permissionType)))
     throw new ReplyError('Invalid Options: "permission-type"');
   if (typeof privateReply !== 'boolean')

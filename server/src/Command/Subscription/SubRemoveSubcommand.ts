@@ -1,10 +1,10 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { ReplyError } from '../../Class/ReplyError';
 import { ChannelNicknameDao } from '../../dao/ChannelNickname';
 import { SubscriptionDao } from '../../dao/Subscription';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
-const SubRemoveSubcommand = new Subcommnad({
+const SubRemoveSubcommand = new Subcommand({
   name: 'remove',
   description: 'Unsubscribe a hololive member. Stop receiving his/her live notification.',
   type: CommandOptionType.SUB_COMMAND,
@@ -14,11 +14,8 @@ const SubRemoveSubcommand = new Subcommnad({
     type: CommandOptionType.STRING,
     required: true,
   } ]
-}, async (interaction) => {
-  const subCommandOptions = interaction.options.first()?.options;
-  if (!subCommandOptions)
-    throw new ReplyError('Invalid Options');
-  const name = subCommandOptions.get('name')?.value;
+}, async (interaction, options) => {
+  const name = options.get('name')?.value;
   if (typeof name !== 'string')
     throw new ReplyError('Invalid Options: "name"');
 

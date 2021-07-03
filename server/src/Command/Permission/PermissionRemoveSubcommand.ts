@@ -1,11 +1,11 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { ReplyError } from '../../Class/ReplyError';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 import { Lib } from '../../lib/common';
 import { PermissionType } from '../../entity/permission';
 import { PermissionDao } from '../../dao/Permission';
 
-const PermissionRemoveSubcommand = new Subcommnad({
+const PermissionRemoveSubcommand = new Subcommand({
   name: 'remove',
   description: 'Remove permission from a role for Holo-bot advanced commands.',
   type: CommandOptionType.SUB_COMMAND,
@@ -21,12 +21,9 @@ const PermissionRemoveSubcommand = new Subcommnad({
     type: CommandOptionType.ROLE,
     required: true,
   }, ]
-}, async (interaction) => {
-  const subCommandOptions = interaction.options.first()?.options;
-  if (!subCommandOptions)
-    throw new ReplyError('Invalid Options');
-  const permissionType = subCommandOptions.get('permission-type')?.value as PermissionType;
-  const role = subCommandOptions.get('role')?.value;
+}, async (interaction, options) => {
+  const permissionType = options.get('permission-type')?.value as PermissionType;
+  const role = options.get('role')?.value;
   if (!(Object.values(PermissionType).includes(permissionType)))
     throw new ReplyError('Invalid Options: "permission-type"');
   if (typeof role !== 'string')
