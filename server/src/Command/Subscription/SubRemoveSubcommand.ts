@@ -4,10 +4,6 @@ import { ChannelNicknameDao } from '../../dao/ChannelNickname';
 import { SubscriptionDao } from '../../dao/Subscription';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
-interface SubRemoveBody {
-  name: string;
-}
-
 const SubRemoveSubcommand = new Subcommnad({
   name: 'remove',
   description: 'Unsubscribe a hololive member. Stop receiving his/her live notification.',
@@ -18,10 +14,17 @@ const SubRemoveSubcommand = new Subcommnad({
     type: CommandOptionType.STRING,
     required: true,
   } ]
-}, async (interaction, body: SubRemoveBody) => {
-  const channelNicknameVal = await ChannelNicknameDao.get(body.name);
+}, async (interaction) => {
+  const subCommandOptions = interaction.options.first()?.options;
+  if (!subCommandOptions)
+    throw new ReplyError('Invalid Options');
+  const name = subCommandOptions.get('name')?.value;
+  if (typeof name !== 'string')
+    throw new ReplyError('Invalid Options: "name"');
+
+  const channelNicknameVal = await ChannelNicknameDao.get(name);
   if (!channelNicknameVal)
-    throw new ReplyError('Holomem not found: ' + body.name);
+    throw new ReplyError('Holomem not found: ' + name);
 
   await SubscriptionDao.remove(interaction.channelID, channelNicknameVal.channel.id);
 

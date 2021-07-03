@@ -3,11 +3,7 @@ import { CommandOptionType } from '../../interface/CommandOptionType';
 import { Lib } from '../../lib/common';
 import { PermissionType } from '../../entity/permission';
 import { PermissionDao } from '../../dao/Permission';
-
-interface PermissionGetBody {
-  'permission-type': PermissionType;
-  'private-reply': boolean;
-}
+import { ReplyError } from '../../Class/ReplyError';
 
 const PermissionGetSubcommand = new Subcommnad({
   name: 'get',
@@ -25,11 +21,21 @@ const PermissionGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction, body: PermissionGetBody) => {
-  const permissions = await PermissionDao.list(interaction.channelID, body['permission-type']);
+}, async (interaction) => {
+  const subCommandOptions = interaction.options.first()?.options;
+  if (!subCommandOptions)
+    throw new ReplyError('Invalid Options');
+  const permissionType = subCommandOptions.get('permission-type')?.value as PermissionType;
+  const privateReply = subCommandOptions.get('private-reply')?.value;
+  if (!(Object.values(PermissionType).includes(permissionType)))
+    throw new ReplyError('Invalid Options: "permission-type"');
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid Options: "private-reply"');
+
+  const permissions = await PermissionDao.list(interaction.channelID, permissionType);
 
   const prefix = '\n◎    ';
-  let info = '【Permission for "' + body['permission-type'] + '"】';
+  let info = '【Permission for "' + permissionType + '"】';
 
   for (const permission of permissions) {
     const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(permission.role_id))?.name;
@@ -39,7 +45,7 @@ const PermissionGetSubcommand = new Subcommnad({
 
   interaction.reply({
     content: info,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 

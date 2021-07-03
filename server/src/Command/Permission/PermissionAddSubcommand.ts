@@ -5,11 +5,6 @@ import { Lib } from '../../lib/common';
 import { PermissionType } from '../../entity/permission';
 import { PermissionDao } from '../../dao/Permission';
 
-interface PermissionAddBody {
-  'permission-type': PermissionType;
-  role: string;
-}
-
 const PermissionAddSubcommand = new Subcommnad({
   name: 'add',
   description: 'Assign permission to a role for Holo-bot advanced commands.',
@@ -26,15 +21,25 @@ const PermissionAddSubcommand = new Subcommnad({
     type: CommandOptionType.ROLE,
     required: true,
   }, ]
-}, async (interaction, body: PermissionAddBody) => {
-  const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(body.role))?.name;
-  if (!roleName)
-    throw new ReplyError('Unknown Role Id: "' + body.role + '". Please retry later.');
+}, async (interaction) => {
+  const subCommandOptions = interaction.options.first()?.options;
+  if (!subCommandOptions)
+    throw new ReplyError('Invalid Options');
+  const permissionType = subCommandOptions.get('permission-type')?.value as PermissionType;
+  const role = subCommandOptions.get('role')?.value;
+  if (!(Object.values(PermissionType).includes(permissionType)))
+    throw new ReplyError('Invalid Options: "permission-type"');
+  if (typeof role !== 'string')
+    throw new ReplyError('Invalid Options: "role"');
 
-  await PermissionDao.insert(interaction.channelID, body['permission-type'], body.role);
+  const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(role))?.name;
+  if (!roleName)
+    throw new ReplyError('Unknown Role Id: "' + role + '". Please retry later.');
+
+  await PermissionDao.insert(interaction.channelID, permissionType, role);
 
   interaction.reply({
-    content: 'Permission added: "' + roleName + '" for "' + body['permission-type'] + '"',
+    content: 'Permission added: "' + roleName + '" for "' + permissionType + '"',
     ephemeral: false,
   });
 });

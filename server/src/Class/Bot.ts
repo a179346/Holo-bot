@@ -7,8 +7,8 @@ import { Lib } from '../lib/common';
 const NAMESPACE = 'BOT';
 
 class Bot {
-  private commandSet: CommandSet;
-  private client: Client;
+  private readonly commandSet: CommandSet;
+  private readonly client: Client;
 
   constructor (commandSet: CommandSet) {
     this.client = new Client({
@@ -23,6 +23,7 @@ class Bot {
     await this.commandSet.init();
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
+
     this.client.on('ready', async () => {
       logging.info(NAMESPACE, `Logged in to discord as ${this.client.user?.tag}!`);
       if (!this.client.application)
@@ -73,7 +74,10 @@ class Bot {
   }
 
   public async sendMessageToChannel (discord_channel_id: string, message: string) {
-    const channel = this.client.channels.cache.get(Lib.ToSnowflake(discord_channel_id));
+    const channel = await this.client.channels.fetch(Lib.ToSnowflake(discord_channel_id), {
+      cache: true,
+      force: false,
+    });
     if (channel?.isText())
       await channel.send(message);
   }

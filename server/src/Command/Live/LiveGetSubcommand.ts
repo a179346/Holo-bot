@@ -6,11 +6,6 @@ import { LiveStatus } from '../../entity/live';
 import { Lib } from '../../lib/common';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
-interface LiveGetBody {
-  name: string;
-  'private-reply': boolean;
-}
-
 const LiveGetSubcommand = new Subcommnad({
   name: 'get',
   description: 'Fetches live, upcoming and recently ended streams.',
@@ -26,10 +21,20 @@ const LiveGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction, body: LiveGetBody) => {
-  const channelNicknameVal = await ChannelNicknameDao.get(body.name);
+}, async (interaction) => {
+  const subCommandOptions = interaction.options.first()?.options;
+  if (!subCommandOptions)
+    throw new ReplyError('Invalid Options');
+  const name = subCommandOptions.get('name')?.value;
+  const privateReply = subCommandOptions.get('private-reply')?.value;
+  if (typeof name !== 'string')
+    throw new ReplyError('Invalid Options: "name"');
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid Options: "private-reply"');
+
+  const channelNicknameVal = await ChannelNicknameDao.get(name);
   if (!channelNicknameVal)
-    throw new ReplyError('Holomem not found: ' + body.name);
+    throw new ReplyError('Holomem not found: ' + name);
 
   const lives = await LiveDao.fetch(channelNicknameVal.channel.id, [ LiveStatus.UPCOMING, LiveStatus.LIVE ]);
 
@@ -59,7 +64,7 @@ const LiveGetSubcommand = new Subcommnad({
 
   interaction.reply({
     content: info,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 

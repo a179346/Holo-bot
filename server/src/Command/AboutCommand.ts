@@ -2,10 +2,7 @@ import { Command } from '../Class/Command';
 import { CommandOptionType } from '../interface/CommandOptionType';
 import { promises as fsPromises } from 'fs';
 import * as path from 'path';
-
-interface AboutBody {
-  'private-reply': boolean;
-}
+import { ReplyError } from '../Class/ReplyError';
 
 let about: string;
 
@@ -18,10 +15,14 @@ export const AboutCommand = new Command({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction, body: AboutBody) => {
+}, async (interaction) => {
+  const privateReply = interaction.options.get('private-reply')?.value;
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid options: "private-reply"');
+
   interaction.reply({
     content: about,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 

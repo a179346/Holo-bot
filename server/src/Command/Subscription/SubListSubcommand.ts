@@ -1,11 +1,8 @@
+import { ReplyError } from '../../Class/ReplyError';
 import { Subcommnad } from '../../Class/Subcommand';
 import { SubscriptionDao } from '../../dao/Subscription';
 import { subscription } from '../../entity/subscription';
 import { CommandOptionType } from '../../interface/CommandOptionType';
-
-interface SubListBody {
-  'private-reply': boolean;
-}
 
 const SubListSubcommand = new Subcommnad({
   name: 'list',
@@ -17,7 +14,14 @@ const SubListSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ],
-}, async (interaction, body: SubListBody) => {
+}, async (interaction) => {
+  const subCommandOptions = interaction.options.first()?.options;
+  if (!subCommandOptions)
+    throw new ReplyError('Invalid Options');
+  const privateReply = subCommandOptions.get('private-reply')?.value;
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid Options: "private-reply"');
+
   const list = await SubscriptionDao.list(interaction.channelID);
 
   let info = '【Subscription List】';
@@ -31,7 +35,7 @@ const SubListSubcommand = new Subcommnad({
 
   interaction.reply({
     content: info,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 

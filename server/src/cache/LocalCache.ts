@@ -3,12 +3,10 @@ import { ICache, CacheOptions, CacheOptionType } from './ICahce';
 const CacheList: LocalCache<any>[] = [];
 
 export class LocalCache<T> implements ICache<T> {
-  private cache: {
-    [key: string]: {
-      expireAt: number,
-      value: T,
-    } | undefined,
-  } = {};
+  private readonly cache: Map<string, {
+    expireAt: number,
+    value: T,
+  }> = new Map();
 
   constructor () {
     CacheList.push(this);
@@ -18,31 +16,28 @@ export class LocalCache<T> implements ICache<T> {
     const nowTimestamp = new Date().getTime();
 
     for (const localCache of CacheList) {
-      for (const key in localCache.cache) {
-        if (Object.prototype.hasOwnProperty.call(localCache.cache, key)) {
-          const data = localCache.cache[key];
-          if (data && nowTimestamp > data.expireAt)
-            await localCache.delete(key);
-        }
+      for (const [ key, obj ] of localCache.cache) {
+        if (nowTimestamp > obj.expireAt)
+          await localCache.delete(key);
       }
     }
   }
 
-  async set (key: string, value: T, cacheOptions: CacheOptions): Promise<void> {
+  public async set (key: string, value: T, cacheOptions: CacheOptions): Promise<void> {
     let expireAt = 0;
     if (cacheOptions.type === CacheOptionType.EXPIRE_AT)
       expireAt = cacheOptions.expireAt;
     else if (cacheOptions.type === CacheOptionType.EXPIRE_MS)
       expireAt =  new Date().getTime() + cacheOptions.expireMs;
 
-    this.cache[key] = {
+    this.cache.set(key, {
       expireAt,
       value,
-    };
+    });
   }
 
-  async get (key: string): Promise<T | undefined> {
-    const data = this.cache[key];
+  public async get (key: string): Promise<T | undefined> {
+    const data = this.cache.get(key);
     if (!data) return undefined;
 
     const nowTimestamp = new Date().getTime();
@@ -54,7 +49,7 @@ export class LocalCache<T> implements ICache<T> {
     return data.value;
   }
 
-  async delete (key: string): Promise<void> {
-    delete this.cache[key];
+  public async delete (key: string): Promise<void> {
+    this.cache.delete(key);
   }
 }

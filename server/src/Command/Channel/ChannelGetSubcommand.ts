@@ -5,11 +5,6 @@ import { ChannelNicknameDao } from '../../dao/ChannelNickname';
 import { Lib } from '../../lib/common';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
-interface ChannelGetBody {
-  name: string;
-  'private-reply': boolean;
-}
-
 const ChannelGetSubcommand = new Subcommnad({
   name: 'get',
   description: 'Fetches info about a channel.',
@@ -25,10 +20,20 @@ const ChannelGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction, body: ChannelGetBody) => {
-  const channelNicknameVal = await ChannelNicknameDao.get(body.name);
+}, async (interaction) => {
+  const subCommandOptions = interaction.options.first()?.options;
+  if (!subCommandOptions)
+    throw new ReplyError('Invalid Options');
+  const name = subCommandOptions.get('name')?.value;
+  const privateReply = subCommandOptions.get('private-reply')?.value;
+  if (typeof name !== 'string')
+    throw new ReplyError('Invalid Options: "name"');
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid Options: "private-reply"');
+
+  const channelNicknameVal = await ChannelNicknameDao.get(name);
   if (!channelNicknameVal)
-    throw new ReplyError('Holomem not found: ' + body.name);
+    throw new ReplyError('Holomem not found: ' + name);
 
   const channelApiVal = await ChannelApiDao.getById(channelNicknameVal.channel.holo_api_id.toString());
   if (channelApiVal.status === 'error')
@@ -50,7 +55,7 @@ const ChannelGetSubcommand = new Subcommnad({
 
   interaction.reply({
     content: info,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 

@@ -9,7 +9,9 @@ import { SubRemoveSubcommand } from './Subscription/SubRemoveSubcommand';
 const SubscriptionCommand = new Layer2Command({
   name: 'subscription',
   description: 'Subscribe to a hololive member. Receive notification when he/she go live.',
-}, async (interaction) => {
+});
+
+SubscriptionCommand.setCheckEvent(async (interaction) => {
   const permissionResult = await Lib.checkPermission(interaction, PermissionType.subscription, true);
   if (!permissionResult)
     throw new ReplyError('Permission denied. Please contact the channel owner.');
