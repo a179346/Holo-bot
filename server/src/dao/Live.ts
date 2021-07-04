@@ -77,6 +77,8 @@ class LiveDao {
       model.live_start = data.live_start;
     if (data.live_end !== undefined)
       model.live_end = data.live_end;
+    if (data.thumbnail !== undefined)
+      model.thumbnail = data.thumbnail;
     if (data.channel_id !== undefined) {
       if (!model.channel)
         model.channel = new channel();

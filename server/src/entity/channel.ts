@@ -19,4 +19,7 @@ export class channel {
 
     @Column({ length: 32, nullable: true })
     emoji?: string;
+
+    @Column({ length: 256, nullable: true })
+    photo?: string;
 }

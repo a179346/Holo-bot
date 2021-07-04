@@ -51,4 +51,7 @@ export class live {
 
     @Column({ type: 'timestamp', nullable: true })
     live_end?: Date;
+
+    @Column({ length: 256, nullable: true })
+    thumbnail?: string;
 }

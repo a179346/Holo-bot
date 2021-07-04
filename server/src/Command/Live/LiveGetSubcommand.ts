@@ -38,43 +38,16 @@ const LiveGetSubcommand = new Subcommand({
 
   const prefix = Lib.getChannelPrefix(channelNicknameVal.channel);
   let info = prefix + channelNicknameVal.channel.name;
-  const liveEmbeds: MessageEmbed[] = [];
-  const upcomingEmbeds: MessageEmbed[] = [];
+  let embeds: MessageEmbed[] | undefined = undefined;
 
   if (lives.length === 0)
     info += '\nThere is no scheduled live...';
-  else {
-    for (const live of lives) {
-      const embedOptions = new MessageEmbed({
-        title: live.title,
-        // description: live.
-        url: Lib.youtubeVideoUrl(live.yt_video_key),
-        timestamp: live.live_schedule,
-        // color?: ColorResolvable;
-        // fields?: EmbedFieldData[];
-        author: {
-          name: channelNicknameVal.channel.name,
-          url: Lib.youtubeChannelUrl(channelNicknameVal.channel.yt_channel_id),
-        },
-        image: {
-          url: Lib.youtubeThumbnailUrl(live.yt_video_key),
-        },
-        // video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
-        footer: {
-          text: live.live_status,
-        }
-      });
-
-      if (live.live_status === LiveStatus.LIVE)
-        liveEmbeds.push(embedOptions);
-      else if (live.live_status === LiveStatus.UPCOMING)
-        upcomingEmbeds.push(embedOptions);
-    }
-  }
+  else
+    embeds = Lib.formatLives(lives, channelNicknameVal.channel);
 
   interaction.reply({
     content: info,
-    embeds: [ ...liveEmbeds, ...upcomingEmbeds ],
+    embeds,
     ephemeral: privateReply,
   });
 });

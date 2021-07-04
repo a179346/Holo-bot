@@ -1,7 +1,8 @@
-import { CommandInteraction, GuildMember } from 'discord.js';
+import { CommandInteraction, GuildMember, MessageEmbed } from 'discord.js';
 import { Snowflake, ApplicationCommandOptionChoice } from 'discord.js';
 import { PermissionDao } from '../dao/Permission';
 import { channel } from '../entity/channel';
+import { live, LiveStatus } from '../entity/live';
 import { PermissionType } from '../entity/permission';
 
 function delay (delayMs: number): Promise<null> {
@@ -88,6 +89,39 @@ function getChannelPrefix (channel: channel) {
   return prefix;
 }
 
+function formatLives (lives: live[], channel?: channel): MessageEmbed[] {
+  const liveEmbeds: MessageEmbed[] = [];
+  const upcomingEmbeds: MessageEmbed[] = [];
+
+  for (const live of lives) {
+    const channelInfo = channel || live.channel;
+
+    const embedOptions = new MessageEmbed({
+      title: live.title,
+      url: youtubeVideoUrl(live.yt_video_key),
+      timestamp: live.live_start || live.live_schedule || undefined,
+      author: {
+        name: channelInfo?.name || undefined,
+        url: channelInfo?.yt_channel_id ? youtubeChannelUrl(channelInfo.yt_channel_id) : undefined,
+        iconURL: channelInfo?.photo || undefined,
+      },
+      image: {
+        url: live.thumbnail || youtubeThumbnailUrl(live.yt_video_key),
+      },
+      footer: {
+        text: live.live_status,
+      }
+    });
+
+    if (live.live_status === LiveStatus.LIVE)
+      liveEmbeds.push(embedOptions);
+    else if (live.live_status === LiveStatus.UPCOMING)
+      upcomingEmbeds.push(embedOptions);
+  }
+
+  return [ ...liveEmbeds, ...upcomingEmbeds ];
+}
+
 export const Lib = {
   delay,
   retry,
@@ -99,4 +133,5 @@ export const Lib = {
   checkPermission,
   ToSnowflake,
   getChannelPrefix,
+  formatLives,
 };

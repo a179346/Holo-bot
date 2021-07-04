@@ -20,12 +20,14 @@ async function LiveNotification () {
       const subs = await SubscriptionDao.getChannelSubs(live.channel.id);
       if (subs.length > 0) {
         const prefix = Lib.getChannelPrefix(live.channel);
-        let info = prefix + '【' + live.channel.name + '】 is streaming!';
-        info += '\n' + Lib.youtubeVideoUrl(live.yt_video_key);
+        const content = prefix + '【' + live.channel.name + '】 is streaming!';
 
         for (const sub of subs) {
           try {
-            await bot.sendMessageToChannel(sub.discord_channel_id, info);
+            await bot.sendMessageToChannel(sub.discord_channel_id, {
+              content,
+              embeds: Lib.formatLives([ live ]),
+            });
           } catch (error) {
             //
           }

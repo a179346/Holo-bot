@@ -1,4 +1,4 @@
-import { Client, Intents, Snowflake } from 'discord.js';
+import { Client, Intents, MessagePayload, MessageOptions, Snowflake } from 'discord.js';
 import { CommandSet } from './CommandSet';
 import { logging } from '../utils/logging';
 import { ReplyError } from './ReplyError';
@@ -73,7 +73,7 @@ class Bot {
     await this.client.login(discordToken);
   }
 
-  public async sendMessageToChannel (discord_channel_id: Snowflake, message: string) {
+  public async sendMessageToChannel (discord_channel_id: Snowflake, message: string | MessagePayload | MessageOptions) {
     const channel = await this.client.channels.fetch(discord_channel_id, {
       cache: true,
       force: false,
