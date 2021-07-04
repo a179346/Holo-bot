@@ -105,6 +105,9 @@ function formatLives (lives: live[], channel?: channel): MessageEmbed[] {
         url: channelInfo?.yt_channel_id ? youtubeChannelUrl(channelInfo.yt_channel_id) : undefined,
         iconURL: channelInfo?.photo || undefined,
       },
+      thumbnail: {
+        url: liveStatusImage(live.live_status),
+      },
       image: {
         url: live.thumbnail || youtubeThumbnailUrl(live.yt_video_key),
       },
@@ -120,6 +123,19 @@ function formatLives (lives: live[], channel?: channel): MessageEmbed[] {
   }
 
   return [ ...liveEmbeds, ...upcomingEmbeds ];
+}
+
+function liveStatusImage (liveStatus: LiveStatus) {
+  switch (liveStatus) {
+    case LiveStatus.LIVE:
+      return 'https://raw.githubusercontent.com/a179346/Holo-bot/main/images/live.png';
+
+    case LiveStatus.UPCOMING:
+      return 'https://raw.githubusercontent.com/a179346/Holo-bot/main/images/upcoming.png';
+
+    case LiveStatus.ENDED:
+      return 'https://raw.githubusercontent.com/a179346/Holo-bot/main/images/ended.png';
+  }
 }
 
 export const Lib = {
