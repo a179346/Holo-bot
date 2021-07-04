@@ -5,6 +5,7 @@ import { LiveDao } from '../../dao/Live';
 import { LiveStatus } from '../../entity/live';
 import { Lib } from '../../lib/common';
 import { CommandOptionType } from '../../interface/CommandOptionType';
+import { MessageEmbed } from 'discord.js';
 
 const LiveGetSubcommand = new Subcommand({
   name: 'get',
@@ -35,32 +36,45 @@ const LiveGetSubcommand = new Subcommand({
 
   const lives = await LiveDao.fetch(channelNicknameVal.channel.id, [ LiveStatus.UPCOMING, LiveStatus.LIVE ]);
 
-  let info = '【' + channelNicknameVal.channel.name + '】';
-  const emoji = channelNicknameVal.channel.emoji || ':point_right:';
-  const prefix = '\n' + emoji + '  ';
+  const prefix = Lib.getChannelPrefix(channelNicknameVal.channel);
+  let info = prefix + channelNicknameVal.channel.name;
+  const liveEmbeds: MessageEmbed[] = [];
+  const upcomingEmbeds: MessageEmbed[] = [];
 
   if (lives.length === 0)
-    info += prefix + 'There is no scheduled live...';
+    info += '\nThere is no scheduled live...';
   else {
     for (const live of lives) {
-      if (live.live_status === LiveStatus.LIVE) {
-        info += prefix + 'Streaming live  :red_circle:';
-        info += '\n' + Lib.youtubeVideoUrl(live.yt_video_key);
-      }
-    }
-    for (const live of lives) {
-      if (live.live_status === LiveStatus.UPCOMING) {
-        if (live.live_schedule)
-          info += prefix + 'Upcoming live  (' + live.live_schedule.toISOString() + ')';
-        else
-          info += prefix + 'Upcoming live';
-        info += '\n' + Lib.youtubeVideoUrl(live.yt_video_key);
-      }
+      const embedOptions = new MessageEmbed({
+        title: live.title,
+        // description: live.
+        url: Lib.youtubeVideoUrl(live.yt_video_key),
+        timestamp: live.live_schedule,
+        // color?: ColorResolvable;
+        // fields?: EmbedFieldData[];
+        author: {
+          name: channelNicknameVal.channel.name,
+          url: Lib.youtubeChannelUrl(channelNicknameVal.channel.yt_channel_id),
+        },
+        image: {
+          url: Lib.youtubeThumbnailUrl(live.yt_video_key),
+        },
+        // video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
+        footer: {
+          text: live.live_status,
+        }
+      });
+
+      if (live.live_status === LiveStatus.LIVE)
+        liveEmbeds.push(embedOptions);
+      else if (live.live_status === LiveStatus.UPCOMING)
+        upcomingEmbeds.push(embedOptions);
     }
   }
 
   interaction.reply({
     content: info,
+    embeds: [ ...liveEmbeds, ...upcomingEmbeds ],
     ephemeral: privateReply,
   });
 });

@@ -31,7 +31,7 @@ const PermissionGetSubcommand = new Subcommand({
 
   const permissions = await PermissionDao.list(interaction.channelID, permissionType);
 
-  const prefix = '\n◎    ';
+  const prefix = '\n:ballot_box_with_check:    ';
   let info = '【Permission for "' + permissionType + '"】';
 
   for (const permission of permissions) {

@@ -1,6 +1,7 @@
 import { CommandInteraction, GuildMember } from 'discord.js';
 import { Snowflake, ApplicationCommandOptionChoice } from 'discord.js';
 import { PermissionDao } from '../dao/Permission';
+import { channel } from '../entity/channel';
 import { PermissionType } from '../entity/permission';
 
 function delay (delayMs: number): Promise<null> {
@@ -30,6 +31,10 @@ function youtubeChannelUrl (channelId: string) {
 
 function youtubeVideoUrl (videoKey: string) {
   return 'https://www.youtube.com/watch?v=' + videoKey;
+}
+
+function youtubeThumbnailUrl (videoKey: string) {
+  return 'https://img.youtube.com/vi/' + videoKey + '/0.jpg';
 }
 
 function twitterUserUrl (twitterLink: string) {
@@ -77,13 +82,21 @@ function ToSnowflake (str: string): Snowflake {
   // return str;
 }
 
+function getChannelPrefix (channel: channel) {
+  const emoji = channel.emoji || ':point_right:';
+  const prefix = '\n' + emoji + '  ';
+  return prefix;
+}
+
 export const Lib = {
   delay,
   retry,
   youtubeChannelUrl,
   youtubeVideoUrl,
+  youtubeThumbnailUrl,
   twitterUserUrl,
   enumToChoices,
   checkPermission,
   ToSnowflake,
+  getChannelPrefix,
 };

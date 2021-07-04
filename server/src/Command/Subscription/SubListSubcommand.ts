@@ -3,6 +3,7 @@ import { Subcommand } from '../../Class/Subcommand';
 import { SubscriptionDao } from '../../dao/Subscription';
 import { subscription } from '../../entity/subscription';
 import { CommandOptionType } from '../../interface/CommandOptionType';
+import { Lib } from '../../lib/common';
 
 const SubListSubcommand = new Subcommand({
   name: 'list',
@@ -37,8 +38,7 @@ const SubListSubcommand = new Subcommand({
 });
 
 function formatSub (sub: subscription) {
-  const emoji = sub.channel.emoji || ':point_right:';
-  const prefix = '\n' + emoji + '  ';
+  const prefix = Lib.getChannelPrefix(sub.channel);
   return prefix + sub.channel.name;
 }
 

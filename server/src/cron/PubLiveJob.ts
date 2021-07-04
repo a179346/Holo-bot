@@ -19,8 +19,7 @@ async function LiveNotification () {
     for (const live of lives) {
       const subs = await SubscriptionDao.getChannelSubs(live.channel.id);
       if (subs.length > 0) {
-        const emoji = live.channel.emoji || ':point_right:';
-        const prefix = '\n' + emoji + '  ';
+        const prefix = Lib.getChannelPrefix(live.channel);
         let info = prefix + '【' + live.channel.name + '】 is streaming!';
         info += '\n' + Lib.youtubeVideoUrl(live.yt_video_key);
 

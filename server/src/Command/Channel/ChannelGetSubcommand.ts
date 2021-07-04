@@ -35,10 +35,8 @@ const ChannelGetSubcommand = new Subcommand({
   const channelApiVal = await ChannelApiDao.getById(channelNicknameVal.channel.holo_api_id.toString());
   if (channelApiVal.status === 'error')
     throw new ReplyError(channelApiVal.data.message);
-  // const prefix = '\n╰ ';
-  // const prefix = '\n:arrow_forward:  ';
-  const emoji = channelNicknameVal.channel.emoji || ':point_right:';
-  const prefix = '\n' + emoji + '  ';
+
+  const prefix = Lib.getChannelPrefix(channelNicknameVal.channel);
 
   let info = '【' + channelApiVal.data.name + '】';
   if (channelApiVal.data.yt_channel_id)
