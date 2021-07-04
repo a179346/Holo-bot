@@ -1,12 +1,10 @@
-import { ApplicationCommandData, CommandInteraction, CommandInteractionOption, Collection } from 'discord.js';
-import { CommandOptionType } from '../interface/CommandOptionType';
-import { ReplyError } from './ReplyError';
+import { ApplicationCommandData, Collection, CommandInteraction, CommandInteractionOption } from 'discord.js';
 
-type RunEvent = (interaction: CommandInteraction, body: any) => Promise<void>;
+type RunEvent = (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) => Promise<void>;
 
 export class Command {
-  public options: ApplicationCommandData;
-  protected runEvent: RunEvent;
+  public readonly options: ApplicationCommandData;
+  protected readonly runEvent: RunEvent;
   private initFunction?: () => Promise<void>;
 
   constructor (options: ApplicationCommandData, runEvent: RunEvent) {
@@ -14,9 +12,8 @@ export class Command {
     this.runEvent = runEvent;
   }
 
-  public async run (interaction: CommandInteraction) {
-    const body = this.parseOptions(interaction.options, interaction.commandName);
-    await this.runEvent(interaction, body);
+  public async run (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
+    await this.runEvent(interaction, options);
   }
 
   public async setInitFunction (initFunction: () => Promise<void>) {
@@ -26,20 +23,5 @@ export class Command {
   public async init () {
     if (this.initFunction)
       await this.initFunction();
-  }
-
-  protected parseOptions (interfaceOption: Collection<string, CommandInteractionOption>, interactionName: string) {
-    if (!interfaceOption)
-      throw new ReplyError('Invalid command: ' + interactionName);
-
-    const body: any = {};
-
-    for (const option of interfaceOption.array()) {
-      if (option.type === CommandOptionType.SUB_COMMAND)
-        throw new ReplyError('Invalid command: ' + interactionName);
-      body[option.name] = option.value;
-    }
-
-    return body;
   }
 }

@@ -1,3 +1,4 @@
+import { Snowflake } from 'discord.js';
 import { Entity, PrimaryColumn } from 'typeorm';
 
 export enum PermissionType {
@@ -7,8 +8,11 @@ export enum PermissionType {
 
 @Entity()
 export class permission {
-    @PrimaryColumn({ length: 20 })
-    discord_channel_id!: string;
+    @PrimaryColumn({
+      type: 'varchar',
+      length: 20,
+    })
+    discord_channel_id!: Snowflake;
 
     @PrimaryColumn({
       type: 'enum',
@@ -17,7 +21,8 @@ export class permission {
     permission_type!: PermissionType;
 
     @PrimaryColumn({
+      type: 'varchar',
       length: 32
     })
-    role_id!: string;
+    role_id!: Snowflake;
 }

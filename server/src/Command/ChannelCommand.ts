@@ -1,12 +1,12 @@
-import { Layer2Command } from '../Class/Layer2Command';
+import { NestedCommand } from '../Class/NestedCommand';
 import { ChannelGetSubcommand } from './Channel/ChannelGetSubcommand';
 
-const ChannelCommand = new Layer2Command({
+const ChannelCommand = new NestedCommand({
   name: 'channel',
   description: 'Everything about Hololive\'s channels.',
-});
-
-ChannelCommand.addSubcommand(ChannelGetSubcommand);
+}, [
+  ChannelGetSubcommand,
+]);
 
 export  {
   ChannelCommand,

@@ -1,13 +1,11 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { ReplyError } from '../../Class/ReplyError';
+import { Subcommand } from '../../Class/Subcommand';
 import { SubscriptionDao } from '../../dao/Subscription';
 import { subscription } from '../../entity/subscription';
 import { CommandOptionType } from '../../interface/CommandOptionType';
+import { Lib } from '../../lib/common';
 
-interface SubListBody {
-  'private-reply': boolean;
-}
-
-const SubListSubcommand = new Subcommnad({
+const SubListSubcommand = new Subcommand({
   name: 'list',
   description: 'List current subscriptions.',
   type: CommandOptionType.SUB_COMMAND,
@@ -17,7 +15,11 @@ const SubListSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ],
-}, async (interaction, body: SubListBody) => {
+}, async (interaction, options) => {
+  const privateReply = options.get('private-reply')?.value;
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid Options: "private-reply"');
+
   const list = await SubscriptionDao.list(interaction.channelID);
 
   let info = '【Subscription List】';
@@ -31,13 +33,12 @@ const SubListSubcommand = new Subcommnad({
 
   interaction.reply({
     content: info,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 
 function formatSub (sub: subscription) {
-  const emoji = sub.channel.emoji || ':point_right:';
-  const prefix = '\n' + emoji + '  ';
+  const prefix = Lib.getChannelPrefix(sub.channel);
   return prefix + sub.channel.name;
 }
 

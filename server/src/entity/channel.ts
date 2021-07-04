@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { channel_nickname } from './channel_nickname';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class channel {
@@ -21,6 +20,6 @@ export class channel {
     @Column({ length: 32, nullable: true })
     emoji?: string;
 
-    @OneToMany(() => channel_nickname, (channel_nickname) => channel_nickname.channel)
-    nicknames!: string[];
+    @Column({ length: 256, nullable: true })
+    photo?: string;
 }

@@ -1,4 +1,4 @@
-export enum CommandOptionType {
+export const enum CommandOptionType {
   SUB_COMMAND = 'SUB_COMMAND',
   SUB_COMMAND_GROUP = 'SUB_COMMAND_GROUP',
   STRING = 'STRING',

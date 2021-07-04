@@ -1,16 +1,11 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { ReplyError } from '../../Class/ReplyError';
 import { ChannelApiDao } from '../../dao/ChannelApi';
 import { ChannelNicknameDao } from '../../dao/ChannelNickname';
 import { Lib } from '../../lib/common';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 
-interface ChannelGetBody {
-  name: string;
-  'private-reply': boolean;
-}
-
-const ChannelGetSubcommand = new Subcommnad({
+const ChannelGetSubcommand = new Subcommand({
   name: 'get',
   description: 'Fetches info about a channel.',
   type: CommandOptionType.SUB_COMMAND,
@@ -25,18 +20,23 @@ const ChannelGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction, body: ChannelGetBody) => {
-  const channelNicknameVal = await ChannelNicknameDao.get(body.name);
+}, async (interaction, options) => {
+  const name = options.get('name')?.value;
+  const privateReply = options.get('private-reply')?.value;
+  if (typeof name !== 'string')
+    throw new ReplyError('Invalid Options: "name"');
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid Options: "private-reply"');
+
+  const channelNicknameVal = await ChannelNicknameDao.get(name);
   if (!channelNicknameVal)
-    throw new ReplyError('Holomem not found: ' + body.name);
+    throw new ReplyError('Holomem not found: ' + name);
 
   const channelApiVal = await ChannelApiDao.getById(channelNicknameVal.channel.holo_api_id.toString());
   if (channelApiVal.status === 'error')
     throw new ReplyError(channelApiVal.data.message);
-  // const prefix = '\n╰ ';
-  // const prefix = '\n:arrow_forward:  ';
-  const emoji = channelNicknameVal.channel.emoji || ':point_right:';
-  const prefix = '\n' + emoji + '  ';
+
+  const prefix = Lib.getChannelPrefix(channelNicknameVal.channel);
 
   let info = '【' + channelApiVal.data.name + '】';
   if (channelApiVal.data.yt_channel_id)
@@ -50,7 +50,7 @@ const ChannelGetSubcommand = new Subcommnad({
 
   interaction.reply({
     content: info,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 

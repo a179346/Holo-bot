@@ -1,15 +1,11 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 import { Lib } from '../../lib/common';
 import { PermissionType } from '../../entity/permission';
 import { PermissionDao } from '../../dao/Permission';
+import { ReplyError } from '../../Class/ReplyError';
 
-interface PermissionGetBody {
-  'permission-type': PermissionType;
-  'private-reply': boolean;
-}
-
-const PermissionGetSubcommand = new Subcommnad({
+const PermissionGetSubcommand = new Subcommand({
   name: 'get',
   description: 'Get roles who have access to a Holo-bot advanced command.',
   type: CommandOptionType.SUB_COMMAND,
@@ -25,21 +21,28 @@ const PermissionGetSubcommand = new Subcommnad({
     type: CommandOptionType.BOOLEAN,
     required: true,
   }, ]
-}, async (interaction, body: PermissionGetBody) => {
-  const permissions = await PermissionDao.list(interaction.channelID, body['permission-type']);
+}, async (interaction, options) => {
+  const permissionType = options.get('permission-type')?.value as PermissionType;
+  const privateReply = options.get('private-reply')?.value;
+  if (!(Object.values(PermissionType).includes(permissionType)))
+    throw new ReplyError('Invalid Options: "permission-type"');
+  if (typeof privateReply !== 'boolean')
+    throw new ReplyError('Invalid Options: "private-reply"');
 
-  const prefix = '\n◎    ';
-  let info = '【Permission for "' + body['permission-type'] + '"】';
+  const permissions = await PermissionDao.list(interaction.channelID, permissionType);
+
+  const prefix = '\n:ballot_box_with_check:    ';
+  let info = '【Permission for "' + permissionType + '"】';
 
   for (const permission of permissions) {
-    const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(permission.role_id))?.name;
+    const roleName = interaction.guild?.roles.cache.get(permission.role_id)?.name;
     if (roleName)
       info += prefix + roleName;
   }
 
   interaction.reply({
     content: info,
-    ephemeral: body['private-reply'],
+    ephemeral: privateReply,
   });
 });
 

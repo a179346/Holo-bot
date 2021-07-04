@@ -2,13 +2,14 @@ import { TypeOrmConnection } from '../utils/typeorm-connection';
 import { Repository } from 'typeorm';
 import { channel } from '../entity/channel';
 import { subscription } from '../entity/subscription';
+import { Snowflake } from 'discord.js';
 
 class SubscriptionDao {
   private get repository (): Repository<subscription> {
     return TypeOrmConnection.connection.getRepository(subscription);
   }
 
-  public async list (discord_channel_id: string): Promise<subscription[]> {
+  public async list (discord_channel_id: Snowflake): Promise<subscription[]> {
     return await this.repository.find({
       relations: [ 'channel' ],
       where: {
@@ -23,14 +24,14 @@ class SubscriptionDao {
     });
   }
 
-  public async remove (discord_channel_id: string, channelId: number): Promise<void> {
+  public async remove (discord_channel_id: Snowflake, channelId: number): Promise<void> {
     await this.repository.delete({
       discord_channel_id,
       channel: { id: channelId }
     });
   }
 
-  public async insert (discord_channel_id: string, channelId: number): Promise<subscription> {
+  public async insert (discord_channel_id: Snowflake, channelId: number): Promise<subscription> {
     const model = new subscription();
 
     model.discord_channel_id = discord_channel_id;

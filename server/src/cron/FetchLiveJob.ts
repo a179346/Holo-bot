@@ -52,6 +52,7 @@ async function upsertIntoLiveDao (liveVedios: LiveVedio[], live_status: LiveStat
         live_start: liveVedio.live_start ? new Date(liveVedio.live_start) : undefined,
         live_end: liveVedio.live_end ? new Date(liveVedio.live_end) : undefined,
         channel_id: liveVedio.channel.id,
+        thumbnail: liveVedio.thumbnail || undefined,
       });
     } catch (error) {
       logging.error(NAMESPACE, error?.message, error);

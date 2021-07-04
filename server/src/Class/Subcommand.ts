@@ -1,17 +1,17 @@
-import { CommandInteraction, ApplicationCommandOption } from 'discord.js';
+import { CommandInteraction, ApplicationCommandOption, Collection, CommandInteractionOption } from 'discord.js';
 
-type SubcommandEvent = (interaction: CommandInteraction, body: any) => Promise<void>;
+type SubcommandEvent = (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) => Promise<void>;
 
-export class Subcommnad {
-  public options: ApplicationCommandOption;
-  private subcommandEvent: SubcommandEvent;
+export class Subcommand {
+  public readonly options: ApplicationCommandOption;
+  private readonly subcommandEvent: SubcommandEvent;
 
   constructor (options: ApplicationCommandOption, subcommandEvent: SubcommandEvent) {
     this.options = options;
     this.subcommandEvent = subcommandEvent;
   }
 
-  public async run (interaction: CommandInteraction, body: any): Promise<void> {
-    await this.subcommandEvent(interaction, body);
+  public async run (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>): Promise<void> {
+    await this.subcommandEvent(interaction, options);
   }
 }

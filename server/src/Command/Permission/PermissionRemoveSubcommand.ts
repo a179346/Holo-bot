@@ -1,16 +1,11 @@
-import { Subcommnad } from '../../Class/Subcommand';
+import { Subcommand } from '../../Class/Subcommand';
 import { ReplyError } from '../../Class/ReplyError';
 import { CommandOptionType } from '../../interface/CommandOptionType';
 import { Lib } from '../../lib/common';
 import { PermissionType } from '../../entity/permission';
 import { PermissionDao } from '../../dao/Permission';
 
-interface PermissionRemoveBody {
-  'permission-type': PermissionType;
-  role: string;
-}
-
-const PermissionRemoveSubcommand = new Subcommnad({
+const PermissionRemoveSubcommand = new Subcommand({
   name: 'remove',
   description: 'Remove permission from a role for Holo-bot advanced commands.',
   type: CommandOptionType.SUB_COMMAND,
@@ -26,15 +21,23 @@ const PermissionRemoveSubcommand = new Subcommnad({
     type: CommandOptionType.ROLE,
     required: true,
   }, ]
-}, async (interaction, body: PermissionRemoveBody) => {
-  const roleName = interaction.guild?.roles.cache.get(Lib.ToSnowflake(body.role))?.name;
-  if (!roleName)
-    throw new ReplyError('Unknown Role Id: "' + body.role + '". Please retry later.');
+}, async (interaction, options) => {
+  const permissionType = options.get('permission-type')?.value as PermissionType;
+  const role = options.get('role')?.value;
+  if (!(Object.values(PermissionType).includes(permissionType)))
+    throw new ReplyError('Invalid Options: "permission-type"');
+  if (typeof role !== 'string')
+    throw new ReplyError('Invalid Options: "role"');
+  const roleId = Lib.ToSnowflake(role);
 
-  await PermissionDao.remove(interaction.channelID, body['permission-type'], body.role);
+  const roleName = interaction.guild?.roles.cache.get(roleId)?.name;
+  if (!roleName)
+    throw new ReplyError('Unknown Role Id: "' + role + '". Please retry later.');
+
+  await PermissionDao.remove(interaction.channelID, permissionType, roleId);
 
   interaction.reply({
-    content: 'Permission removed: "' + roleName + '" for "' + body['permission-type'] + '"',
+    content: 'Permission removed: "' + roleName + '" for "' + permissionType + '"',
     ephemeral: false,
   });
 });

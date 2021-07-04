@@ -1,4 +1,4 @@
-export enum CacheOptionType { EXPIRE_MS = 'expireMs', EXPIRE_AT = 'expireAt' }
+export const enum CacheOptionType { EXPIRE_MS = 'expireMs', EXPIRE_AT = 'expireAt' }
 
 export type CacheOptions = {
   type: CacheOptionType.EXPIRE_MS,

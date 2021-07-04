@@ -1,14 +1,14 @@
-import { Client, Intents } from 'discord.js';
+import { Client, Intents, MessagePayload, MessageOptions, Snowflake } from 'discord.js';
 import { CommandSet } from './CommandSet';
 import { logging } from '../utils/logging';
 import { ReplyError } from './ReplyError';
-import { Lib } from '../lib/common';
+// import { Lib } from '../lib/common';
 
 const NAMESPACE = 'BOT';
 
 class Bot {
-  private commandSet: CommandSet;
-  private client: Client;
+  private readonly commandSet: CommandSet;
+  private readonly client: Client;
 
   constructor (commandSet: CommandSet) {
     this.client = new Client({
@@ -23,6 +23,7 @@ class Bot {
     await this.commandSet.init();
 
     logging.info(NAMESPACE, 'Logging in to discord ...');
+
     this.client.on('ready', async () => {
       logging.info(NAMESPACE, `Logged in to discord as ${this.client.user?.tag}!`);
       if (!this.client.application)
@@ -52,7 +53,7 @@ class Bot {
         if (!command)
           throw new ReplyError('Unknown command: ' + interaction.commandName);
 
-        await command.run(interaction);
+        await command.run(interaction, interaction.options);
       } catch (error) {
         if (error instanceof ReplyError)
           interaction.reply({
@@ -72,8 +73,11 @@ class Bot {
     await this.client.login(discordToken);
   }
 
-  public async sendMessageToChannel (discord_channel_id: string, message: string) {
-    const channel = this.client.channels.cache.get(Lib.ToSnowflake(discord_channel_id));
+  public async sendMessageToChannel (discord_channel_id: Snowflake, message: string | MessagePayload | MessageOptions) {
+    const channel = await this.client.channels.fetch(discord_channel_id, {
+      cache: true,
+      force: false,
+    });
     if (channel?.isText())
       await channel.send(message);
   }
