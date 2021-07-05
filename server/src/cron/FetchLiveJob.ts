@@ -15,7 +15,7 @@ async function fetchLiveDataAndInsertToDb () {
   try {
     const liveApiResult = await LiveApiDao.list({
       max_upcoming_hours: 48,
-      lookback_hours: 6,
+      lookback_hours: 1,
       hide_channel_desc: 1,
     });
 

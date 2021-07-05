@@ -2,7 +2,7 @@ import { TypeOrmConnection } from '../utils/typeorm-connection';
 import { Repository } from 'typeorm';
 import { permission, PermissionType } from '../entity/permission';
 import { LocalCache } from '../cache/LocalCache';
-import { CacheOptionType, ICache } from '../cache/ICahce';
+import { ICache } from '../cache/ICahce';
 import { Snowflake } from 'discord.js';
 
 const cache: ICache<permission[]> = new LocalCache();
@@ -27,7 +27,6 @@ class PermissionDao {
     });
 
     await cache.set(key, permissions, {
-      type: CacheOptionType.EXPIRE_MS,
       expireMs: EXPIRE_MS,
     });
 

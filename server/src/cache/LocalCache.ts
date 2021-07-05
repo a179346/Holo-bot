@@ -1,4 +1,4 @@
-import { ICache, CacheOptions, CacheOptionType } from './ICahce';
+import { ICache, ExpireMsOption, ExpireAtOption, isExpireAtOption } from './ICahce';
 
 const CacheList: LocalCache<any>[] = [];
 
@@ -23,12 +23,13 @@ export class LocalCache<T> implements ICache<T> {
     }
   }
 
-  public async set (key: string, value: T, cacheOptions: CacheOptions): Promise<void> {
+  public async set (key: string, value: T, options: ExpireMsOption | ExpireAtOption): Promise<void> {
     let expireAt = 0;
-    if (cacheOptions.type === CacheOptionType.EXPIRE_AT)
-      expireAt = cacheOptions.expireAt;
-    else if (cacheOptions.type === CacheOptionType.EXPIRE_MS)
-      expireAt =  new Date().getTime() + cacheOptions.expireMs;
+
+    if (isExpireAtOption(options))
+      expireAt = options.expireAt;
+    else
+      expireAt = new Date().getTime() + options.expireMs;
 
     this.cache.set(key, {
       expireAt,

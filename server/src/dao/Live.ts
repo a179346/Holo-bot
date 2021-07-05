@@ -2,7 +2,7 @@ import { TypeOrmConnection } from '../utils/typeorm-connection';
 import { Repository } from 'typeorm';
 import { live, LiveStatus, PubStatus } from '../entity/live';
 import { channel } from '../entity/channel';
-import { CacheOptionType, ICache } from '../cache/ICahce';
+import { ICache } from '../cache/ICahce';
 import { LocalCache } from '../cache/LocalCache';
 
 const cache: ICache<live[]> = new LocalCache();
@@ -28,7 +28,6 @@ class LiveDao {
       .getMany();
 
     await cache.set(cacheKey, lives, {
-      type: CacheOptionType.EXPIRE_MS,
       expireMs: EXPIRE_MS,
     });
 
