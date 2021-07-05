@@ -3,6 +3,13 @@ import { Repository } from 'typeorm';
 import { channel } from '../entity/channel';
 import { subscription } from '../entity/subscription';
 import { Snowflake } from 'discord.js';
+import { ICache } from '../cache/ICahce';
+import { LocalCache } from '../cache/LocalCache';
+
+const cache: ICache<subscription[]> = new LocalCache();
+const cacheKey = (discord_channel_id: Snowflake) => discord_channel_id;
+// 3 MINUTES
+const EXPIRE_MS = 1000 * 60 * 3;
 
 class SubscriptionDao {
   private get repository (): Repository<subscription> {
@@ -10,12 +17,23 @@ class SubscriptionDao {
   }
 
   public async list (discord_channel_id: Snowflake): Promise<subscription[]> {
-    return await this.repository.find({
+    const key = cacheKey(discord_channel_id);
+    const cacheVal = await cache.get(key);
+    if (cacheVal !== undefined)
+      return cacheVal;
+
+    const subscriptions = await this.repository.find({
       relations: [ 'channel' ],
       where: {
         discord_channel_id
       },
     });
+
+    await cache.set(key, subscriptions, {
+      expireMs: EXPIRE_MS
+    });
+
+    return subscriptions;
   }
 
   public async getChannelSubs (channelId: number): Promise<subscription[]> {
@@ -29,6 +47,9 @@ class SubscriptionDao {
       discord_channel_id,
       channel: { id: channelId }
     });
+
+    const key = cacheKey(discord_channel_id);
+    await cache.delete(key);
   }
 
   public async insert (discord_channel_id: Snowflake, channelId: number): Promise<subscription> {
@@ -38,7 +59,11 @@ class SubscriptionDao {
     model.channel = new channel();
     model.channel.id = channelId;
 
-    return await this.repository.save(model);
+    const sub = await this.repository.save(model);
+    const key = cacheKey(discord_channel_id);
+    await cache.delete(key);
+
+    return sub;
   }
 }
 
