@@ -8,5 +8,5 @@
 
 **:comet:  More information**
 ```
-https://github.com/a179346/Holo-bot
+https://github.com/a179346/Holo-bot#readme
 ```

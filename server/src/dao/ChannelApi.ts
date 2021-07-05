@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CacheOptionType, ICache } from '../cache/ICahce';
+import { ICache } from '../cache/ICahce';
 import { LocalCache } from '../cache/LocalCache';
 import { config } from '../system/config';
 
@@ -63,7 +63,6 @@ class ChannelApiDao {
         data: response.data as ChannelApiSuccessResponse,
       };
       await cache.set(holo_api_id, data, {
-        type: CacheOptionType.EXPIRE_MS,
         expireMs: SUCCESS_EXPIRE_MS,
       });
       return data;
@@ -81,7 +80,6 @@ class ChannelApiDao {
       };
 
       await cache.set(holo_api_id, data, {
-        type: CacheOptionType.EXPIRE_MS,
         expireMs: ERROR_EXPIRE_MS,
       });
       return data;
