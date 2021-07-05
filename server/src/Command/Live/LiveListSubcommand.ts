@@ -12,16 +12,16 @@ const LiveListSubcommand = new Subcommand({
   description: 'Fetches live, upcoming streams from subscribed channels.',
   type: CommandOptionType.SUB_COMMAND,
   options: [ {
-    name: 'private-reply',
-    description: 'If false, reply is public.',
-    type: CommandOptionType.BOOLEAN,
-    required: true,
-  }, {
     name: 'only-live',
     description: 'If true, no upcoming streams will be shown.',
     type: CommandOptionType.BOOLEAN,
     required: true,
-  }, ]
+  }, {
+    name: 'private-reply',
+    description: 'If false, reply is public.',
+    type: CommandOptionType.BOOLEAN,
+    required: true,
+  },  ]
 }, async (interaction, options) => {
   const privateReply = options.get('private-reply')?.value;
   const onlyLive = options.get('only-live')?.value;
