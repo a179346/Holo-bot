@@ -128,13 +128,13 @@ function formatLives (lives: live[], channel?: channel): MessageEmbed[] {
 function liveStatusImage (liveStatus: LiveStatus) {
   switch (liveStatus) {
     case LiveStatus.LIVE:
-      return 'https://raw.githubusercontent.com/a179346/Holo-bot/main/images/live.png';
+      return 'https://raw.githubusercontent.com/a179346/Holo-bot/images/images/live.png';
 
     case LiveStatus.UPCOMING:
-      return 'https://raw.githubusercontent.com/a179346/Holo-bot/main/images/upcoming.png';
+      return 'https://raw.githubusercontent.com/a179346/Holo-bot/images/images/upcoming.png';
 
     case LiveStatus.ENDED:
-      return 'https://raw.githubusercontent.com/a179346/Holo-bot/main/images/ended.png';
+      return 'https://raw.githubusercontent.com/a179346/Holo-bot/images/images/ended.png';
   }
 }
 
