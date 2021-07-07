@@ -12,11 +12,25 @@
   </a>
 </p>
 
-> 🤖 A Hololive discord bot 🤖
+> A Hololive discord bot
 
-### 🏠 [Homepage](https://github.com/a179346/Holo-bot#readme)
+## 🤖 Invite Holo-bot to discord server
+[Invite link](https://discord.com/api/oauth2/authorize?client_id=851705760358465556&permissions=2147502080&scope=applications.commands%20bot)
 
-## Author
+## 🎍 Features
+
+### 1. Receive live notification
+![image](https://raw.githubusercontent.com/a179346/Holo-bot/images/images/live_notification.PNG)
+
+### 2. Get information about a holomem
+![image](https://raw.githubusercontent.com/a179346/Holo-bot/images/images/channel_get.PNG)
+
+### 3. Fetch live or upcoming streams
+![image](https://raw.githubusercontent.com/a179346/Holo-bot/images/images/live_get.PNG)
+
+***
+
+## 🙋‍♂️ Author
 
 * Github: [@a179346](https://github.com/a179346)
 
@@ -24,7 +38,7 @@
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/a179346/Holo-bot/issues). 
 
-## Show your support
+## ⭐️ Show your support
 
 Give a ⭐️ if this project helped you!
 
