@@ -28,11 +28,17 @@
 ### 3. Fetch live or upcoming streams
 ![image](https://raw.githubusercontent.com/a179346/Holo-bot/images/images/live_get.PNG)
 
+## 📋 Run `/about` to list all commands
+![image](https://raw.githubusercontent.com/a179346/Holo-bot/images/images/about.PNG)
+
 ***
 
 ## 🙋‍♂️ Author
 
 * Github: [@a179346](https://github.com/a179346)
+
+## 📩 API
+* [HoloAPI from HoloFans](https://github.com/holofans/holoapi)
 
 ## 🤝 Contributing
 
