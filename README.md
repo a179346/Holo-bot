@@ -16,7 +16,7 @@
 
 ## 📌 Link
 
-[🤖 Invite Holo-bot to discord server](https://discord.com/api/oauth2/authorize?client_id=851705760358465556&permissions=2147502080&scope=applications.commands%20bot)
+[🤖 Invite Holo-bot to discord server](https://dsc.gg/holo-bot)
 
 [🌺 Welcome to our discord server](https://discord.gg/Pk5GMXZBMx)
 

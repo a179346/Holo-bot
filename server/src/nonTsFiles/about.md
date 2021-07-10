@@ -7,9 +7,8 @@
 `/permission` :  Get or edit permissions for a role who have access to Holo-bot advanced commands.
 
 **:comet:  Invite Holo-bot to discord server**
-```
-https://discord.com/api/oauth2/authorize?client_id=851705760358465556&permissions=2147502080&scope=applications.commands%20bot
-```
+https://dsc.gg/holo-bot
+
 **:comet:  More information**
 ```
 https://github.com/a179346/Holo-bot#readme
