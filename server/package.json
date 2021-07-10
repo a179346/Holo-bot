@@ -1,6 +1,6 @@
 {
   "name": "holo-bot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Holo-bot",
   "main": "dist/index.js",
   "scripts": {
