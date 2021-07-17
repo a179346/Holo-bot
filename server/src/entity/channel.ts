@@ -22,4 +22,7 @@ export class channel {
 
     @Column({ length: 256, nullable: true })
     photo?: string;
+
+    @Column({ length: 256, nullable: true })
+    greeting?: string;
 }
