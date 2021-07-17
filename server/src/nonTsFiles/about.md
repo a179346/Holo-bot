@@ -1,6 +1,7 @@
 **:robot:  A Hololive discord bot  :robot:**
 
 **:comet:  Feature**
+`/greeting` :  Hololive greetings.
 `/channel` :  Everything about Hololive\'s channels.
 `/live` :  Information about live, upcoming and recently ended streams.
 `/subscription` :  Subscribe to a hololive member. Receive notification when he/she go live.

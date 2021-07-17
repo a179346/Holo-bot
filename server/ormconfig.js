@@ -1,19 +1,19 @@
 // eslint-disable-next-line
 require('dotenv').config();
 
-if (!process.env.DB_HOST) throw new Error('No HOST');
-if (!process.env.DB_PORT) throw new Error('No PORT');
-if (!process.env.DB_USER_NAME) throw new Error('No USERNAME');
-if (!process.env.DB_PASSWORD) throw new Error('No PASSWORD');
-if (!process.env.DB_DATABASE) throw new Error('No DATABASE');
+const DB_HOST = process.env.DB_HOST || '127.0.0.1';
+const DB_PORT = process.env.DB_PORT || '3306';
+const DB_USER_NAME = process.env.DB_USER_NAME || 'mysql_user';
+const DB_PASSWORD = process.env.DB_PASSWORD || 'mysql_password';
+const DB_DATABASE = process.env.DB_DATABASE || 'my-db';
 
 module.exports = {
   'type': 'mysql',
-  'host': process.env.DB_HOST,
-  'port': process.env.DB_PORT,
-  'username': process.env.DB_USER_NAME,
-  'password': process.env.DB_PASSWORD,
-  'database': process.env.DB_DATABASE,
+  'host': DB_HOST,
+  'port': DB_PORT,
+  'username': DB_USER_NAME,
+  'password': DB_PASSWORD,
+  'database': DB_DATABASE,
   'synchronize': false,
   'logging': false,
   'charset': 'utf8mb4',
