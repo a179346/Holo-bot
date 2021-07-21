@@ -45,7 +45,7 @@
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/a179346/Holo-bot/issues).<br />[Guide for development](https://github.com/a179346/Holo-bot/blob/main/guide-for-development.md) 
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/a179346/Holo-bot/issues).<br />[Guide for development](https://github.com/a179346/Holo-bot/blob/main/CONTRIBUTING.md) 
 
 ## ⭐️ Show your support
 
