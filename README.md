@@ -1,4 +1,6 @@
-<h1 align="center"> 🤖 Holo-bot 🤖</h1>
+<div align="center">
+
+<h1> 🤖 Holo-bot 🤖</h1>
 <p>
   <a href="https://top.gg/bot/851705760358465556">
     <img src="https://top.gg/api/widget/status/851705760358465556.svg" alt="Holo-bot" />
@@ -16,6 +18,8 @@
 </p>
 
 > A Hololive discord bot
+
+</div>
 
 ## 📌 Link
 
