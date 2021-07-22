@@ -1,5 +1,8 @@
 <h1 align="center"> 🤖 Holo-bot 🤖</h1>
 <p>
+  <a href="https://top.gg/bot/851705760358465556">
+    <img src="https://top.gg/api/widget/status/851705760358465556.svg" alt="Holo-bot" />
+  </a>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.7-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/a179346/Holo-bot#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
