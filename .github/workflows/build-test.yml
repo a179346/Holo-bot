@@ -21,11 +21,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - run: cp ./server/package-lock.json ./package-lock.json
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - run: npm ci
-    - run: npm lint
+      working-directory: ./server
+
+    - run: npm run lint
+      working-directory: ./server
+
     - run: npm run build
+      working-directory: ./server
