@@ -31,7 +31,7 @@
     "dotenv": "^10.0.0",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.35"
+    "typeorm": "^0.2.36"
   },
   "devDependencies": {
     "@types/cron": "^1.7.3",
