@@ -27,7 +27,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "cron": "^1.8.2",
-    "discord.js": "^13.0.0-dev.fe6cc0c.1625184228",
+    "discord.js": "^13.0.0-dev.t1628124537.3eb4140",
     "dotenv": "^10.0.0",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
