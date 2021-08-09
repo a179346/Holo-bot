@@ -23,14 +23,14 @@ const LiveListSubcommand = new Subcommand({
     required: true,
   },  ]
 }, async (interaction, options) => {
-  const privateReply = options.get('private-reply')?.value;
-  const onlyLive = options.get('only-live')?.value;
+  const privateReply = options.getBoolean('private-reply');
+  const onlyLive = options.getBoolean('only-live');
   if (typeof privateReply !== 'boolean')
     throw new ReplyError('Invalid Options: "private-reply"');
   if (typeof onlyLive !== 'boolean')
     throw new ReplyError('Invalid Options: "only-live"');
 
-  const subscriptions = await SubscriptionDao.list(interaction.channelID);
+  const subscriptions = await SubscriptionDao.list(interaction.channelId);
   if (subscriptions.length === 0)
     throw new ReplyError('No channel subscribed.');
 

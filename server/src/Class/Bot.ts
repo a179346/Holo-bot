@@ -35,7 +35,7 @@ class Bot {
       // console.log(commands);
       if (commands.size < this.commandSet.size) {
         try {
-          for (const command of this.commandSet.array()) {
+          for (const command of this.commandSet.values()) {
             await this.client.application.commands.create(command.options);
           }
         } catch (error) {
@@ -45,7 +45,7 @@ class Bot {
     });
 
 
-    this.client.on('interaction', async (interaction) => {
+    this.client.on('interactionCreate', async (interaction) => {
       if (!interaction.isCommand())
         return;
       try {

@@ -58,7 +58,7 @@ function enumToChoices (enumVal: {[key: string]: any}): ApplicationCommandOption
 
 async function checkPermission (interaction: CommandInteraction, permissionType: PermissionType, ownerDefaultEnable: boolean): Promise<boolean> {
   // channel owner
-  if (ownerDefaultEnable && interaction.guild?.ownerID === interaction.user.id)
+  if (ownerDefaultEnable && interaction.guild?.ownerId === interaction.user.id)
     return true;
 
   // DM
@@ -68,7 +68,7 @@ async function checkPermission (interaction: CommandInteraction, permissionType:
   if (!interaction.member || !(interaction.member instanceof GuildMember))
     return false;
 
-  const permissions = await PermissionDao.list(interaction.channelID, permissionType);
+  const permissions = await PermissionDao.list(interaction.channelId, permissionType);
   const member = await interaction.member.fetch(true);
   for (const permission of permissions) {
     if (member.roles.cache.has(permission.role_id))

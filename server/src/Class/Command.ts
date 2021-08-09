@@ -1,6 +1,6 @@
-import { ApplicationCommandData, Collection, CommandInteraction, CommandInteractionOption } from 'discord.js';
+import { ApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
 
-type RunEvent = (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) => Promise<void>;
+type RunEvent = (interaction: CommandInteraction, options: CommandInteractionOptionResolver) => Promise<void>;
 
 export class Command {
   public readonly options: ApplicationCommandData;
@@ -12,7 +12,7 @@ export class Command {
     this.runEvent = runEvent;
   }
 
-  public async run (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
+  public async run (interaction: CommandInteraction, options: CommandInteractionOptionResolver) {
     await this.runEvent(interaction, options);
   }
 

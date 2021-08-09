@@ -15,7 +15,7 @@ const SubRemoveSubcommand = new Subcommand({
     required: true,
   } ]
 }, async (interaction, options) => {
-  const name = options.get('name')?.value;
+  const name = options.getString('name');
   if (typeof name !== 'string')
     throw new ReplyError('Invalid Options: "name"');
 
@@ -23,7 +23,7 @@ const SubRemoveSubcommand = new Subcommand({
   if (!channelNicknameVal)
     throw new ReplyError('Holomem not found: ' + name);
 
-  await SubscriptionDao.remove(interaction.channelID, channelNicknameVal.channel.id);
+  await SubscriptionDao.remove(interaction.channelId, channelNicknameVal.channel.id);
 
   interaction.reply({
     content: 'Subscription removed: 【' + channelNicknameVal.channel.name + '】',

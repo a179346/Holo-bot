@@ -22,14 +22,14 @@ const PermissionGetSubcommand = new Subcommand({
     required: true,
   }, ]
 }, async (interaction, options) => {
-  const permissionType = options.get('permission-type')?.value as PermissionType;
-  const privateReply = options.get('private-reply')?.value;
+  const permissionType = options.getString('permission-type') as PermissionType;
+  const privateReply = options.getBoolean('private-reply');
   if (!(Object.values(PermissionType).includes(permissionType)))
     throw new ReplyError('Invalid Options: "permission-type"');
   if (typeof privateReply !== 'boolean')
     throw new ReplyError('Invalid Options: "private-reply"');
 
-  const permissions = await PermissionDao.list(interaction.channelID, permissionType);
+  const permissions = await PermissionDao.list(interaction.channelId, permissionType);
 
   const prefix = '\n:ballot_box_with_check:    ';
   let info = '【Permission for "' + permissionType + '"】';

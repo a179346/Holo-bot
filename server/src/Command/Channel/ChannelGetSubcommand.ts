@@ -21,8 +21,8 @@ const ChannelGetSubcommand = new Subcommand({
     required: true,
   }, ]
 }, async (interaction, options) => {
-  const name = options.get('name')?.value;
-  const privateReply = options.get('private-reply')?.value;
+  const name = options.getString('name');
+  const privateReply = options.getBoolean('private-reply');
   if (typeof name !== 'string')
     throw new ReplyError('Invalid Options: "name"');
   if (typeof privateReply !== 'boolean')
