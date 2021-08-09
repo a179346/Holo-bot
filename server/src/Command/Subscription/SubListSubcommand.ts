@@ -16,11 +16,11 @@ const SubListSubcommand = new Subcommand({
     required: true,
   }, ],
 }, async (interaction, options) => {
-  const privateReply = options.get('private-reply')?.value;
+  const privateReply = options.getBoolean('private-reply');
   if (typeof privateReply !== 'boolean')
     throw new ReplyError('Invalid Options: "private-reply"');
 
-  const list = await SubscriptionDao.list(interaction.channelID);
+  const list = await SubscriptionDao.list(interaction.channelId);
 
   let info = '【Subscription List】';
   if (list.length === 0)

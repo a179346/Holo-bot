@@ -2,9 +2,9 @@ import { Subcommand } from './Subcommand';
 import { ReplyError } from './ReplyError';
 import { CommandOptionType } from '../interface/CommandOptionType';
 import { Command } from './Command';
-import { ApplicationCommandData, Collection, CommandInteraction, CommandInteractionOption } from 'discord.js';
+import { ApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
 
-type CheckEvent = (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) => Promise<void>;
+type CheckEvent = (interaction: CommandInteraction, options: CommandInteractionOptionResolver) => Promise<void>;
 
 export class NestedCommand extends Command {
   private readonly subcommandMap: Map<string, Subcommand> = new Map();
@@ -29,8 +29,8 @@ export class NestedCommand extends Command {
     this.subcommandMap.set(subcommand.options.name, subcommand);
   }
 
-  private async nestedRun (interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
-    const commamdOptions = options.first();
+  private async nestedRun (interaction: CommandInteraction, options: CommandInteractionOptionResolver) {
+    const commamdOptions = options.data[0];
     if (!commamdOptions || !commamdOptions.options || commamdOptions.type !== CommandOptionType.SUB_COMMAND)
       throw new ReplyError('Invalid command: ' + interaction.commandName);
 
@@ -43,6 +43,6 @@ export class NestedCommand extends Command {
 
     if (this.checkEvent)
       await this.checkEvent(interaction, options);
-    await subcommand.run(interaction, commamdOptions.options);
+    await subcommand.run(interaction, options);
   }
 }

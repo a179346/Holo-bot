@@ -22,19 +22,19 @@ const PermissionRemoveSubcommand = new Subcommand({
     required: true,
   }, ]
 }, async (interaction, options) => {
-  const permissionType = options.get('permission-type')?.value as PermissionType;
-  const role = options.get('role')?.value;
+  const permissionType = options.getString('permission-type') as PermissionType;
+  const role = options.getRole('role');
   if (!(Object.values(PermissionType).includes(permissionType)))
     throw new ReplyError('Invalid Options: "permission-type"');
-  if (typeof role !== 'string')
+  if (!role)
     throw new ReplyError('Invalid Options: "role"');
-  const roleId = Lib.ToSnowflake(role);
+  const roleId = Lib.ToSnowflake(role.id);
 
   const roleName = interaction.guild?.roles.cache.get(roleId)?.name;
   if (!roleName)
-    throw new ReplyError('Unknown Role Id: "' + role + '". Please retry later.');
+    throw new ReplyError('Unknown Role Id: "' + role.id + '". Please retry later.');
 
-  await PermissionDao.remove(interaction.channelID, permissionType, roleId);
+  await PermissionDao.remove(interaction.channelId, permissionType, roleId);
 
   interaction.reply({
     content: 'Permission removed: "' + roleName + '" for "' + permissionType + '"',
