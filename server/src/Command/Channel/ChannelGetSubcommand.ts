@@ -11,7 +11,7 @@ const ChannelGetSubcommand = new Subcommand({
   type: CommandOptionType.SUB_COMMAND,
   options: [ {
     name: 'name',
-    description: 'holomem\'s name Ex. "okayu"',
+    description: 'holomem\'s name (e.g., "okayu")',
     type: CommandOptionType.STRING,
     required: true,
   }, {
