@@ -1,17 +1,17 @@
-import { CommandInteraction, ApplicationCommandOption, CommandInteractionOptionResolver } from 'discord.js';
+import { CommandInteraction, ApplicationCommandSubCommandData, CommandInteractionOptionResolver } from 'discord.js';
 
-type SubcommandEvent = (interaction: CommandInteraction, options: CommandInteractionOptionResolver) => Promise<void>;
+type SubcommandEvent = (interaction: CommandInteraction, options: Omit<CommandInteractionOptionResolver<'cached'>, 'getMessage' | 'getFocused'>) => Promise<void>;
 
 export class Subcommand {
-  public readonly options: ApplicationCommandOption;
+  public readonly options: ApplicationCommandSubCommandData;
   private readonly subcommandEvent: SubcommandEvent;
 
-  constructor (options: ApplicationCommandOption, subcommandEvent: SubcommandEvent) {
+  constructor (options: ApplicationCommandSubCommandData, subcommandEvent: SubcommandEvent) {
     this.options = options;
     this.subcommandEvent = subcommandEvent;
   }
 
-  public async run (interaction: CommandInteraction, options: CommandInteractionOptionResolver): Promise<void> {
+  public async run (interaction: CommandInteraction, options: Omit<CommandInteractionOptionResolver<'cached'>, 'getMessage' | 'getFocused'>): Promise<void> {
     await this.subcommandEvent(interaction, options);
   }
 }

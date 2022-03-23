@@ -1,18 +1,18 @@
-import { ApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
+import { ChatInputApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
 
-type RunEvent = (interaction: CommandInteraction, options: CommandInteractionOptionResolver) => Promise<void>;
+type RunEvent = (interaction: CommandInteraction, options: Omit<CommandInteractionOptionResolver<'cached'>, 'getMessage' | 'getFocused'>) => Promise<void>;
 
 export class Command {
-  public readonly options: ApplicationCommandData;
+  public readonly options: ChatInputApplicationCommandData;
   protected readonly runEvent: RunEvent;
   private initFunction?: () => Promise<void>;
 
-  constructor (options: ApplicationCommandData, runEvent: RunEvent) {
+  constructor (options: ChatInputApplicationCommandData, runEvent: RunEvent) {
     this.options = options;
     this.runEvent = runEvent;
   }
 
-  public async run (interaction: CommandInteraction, options: CommandInteractionOptionResolver) {
+  public async run (interaction: CommandInteraction, options: Omit<CommandInteractionOptionResolver<'cached'>, 'getMessage' | 'getFocused'>) {
     await this.runEvent(interaction, options);
   }
 

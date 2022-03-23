@@ -2,15 +2,15 @@ import { Subcommand } from './Subcommand';
 import { ReplyError } from './ReplyError';
 import { CommandOptionType } from '../interface/CommandOptionType';
 import { Command } from './Command';
-import { ApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
+import { ChatInputApplicationCommandData, CommandInteraction, CommandInteractionOptionResolver } from 'discord.js';
 
-type CheckEvent = (interaction: CommandInteraction, options: CommandInteractionOptionResolver) => Promise<void>;
+type CheckEvent = (interaction: CommandInteraction, options: Omit<CommandInteractionOptionResolver<'cached'>, 'getMessage' | 'getFocused'>) => Promise<void>;
 
 export class NestedCommand extends Command {
   private readonly subcommandMap: Map<string, Subcommand> = new Map();
   private checkEvent?: CheckEvent;
 
-  constructor (options: ApplicationCommandData, subcommands: Subcommand[]) {
+  constructor (options: ChatInputApplicationCommandData, subcommands: Subcommand[]) {
     super(options, NestedCommand.prototype.nestedRun);
     for (const subcommand of subcommands) {
       this.addSubcommand(subcommand);
@@ -29,7 +29,7 @@ export class NestedCommand extends Command {
     this.subcommandMap.set(subcommand.options.name, subcommand);
   }
 
-  private async nestedRun (interaction: CommandInteraction, options: CommandInteractionOptionResolver) {
+  private async nestedRun (interaction: CommandInteraction, options: Omit<CommandInteractionOptionResolver<'cached'>, 'getMessage' | 'getFocused'>) {
     const commamdOptions = options.data[0];
     if (!commamdOptions || !commamdOptions.options || commamdOptions.type !== CommandOptionType.SUB_COMMAND)
       throw new ReplyError('Invalid command: ' + interaction.commandName);
