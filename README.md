@@ -8,7 +8,7 @@
   <a href="https://github.com/a179346/Holo-bot/actions/workflows/build-test.yml" target="_blank">
     <img alt="Build" src="https://github.com/a179346/Holo-bot/actions/workflows/build-test.yml/badge.svg" />
   </a>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.3.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.4.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/a179346/Holo-bot#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
