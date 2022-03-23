@@ -45,7 +45,7 @@ const LiveGetSubcommand = new Subcommand({
   else
     embeds = Lib.formatLives(lives, channelNicknameVal.channel);
 
-  interaction.reply({
+  await interaction.reply({
     content: info,
     embeds,
     ephemeral: privateReply,

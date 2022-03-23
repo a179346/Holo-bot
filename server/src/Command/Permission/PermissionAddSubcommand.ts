@@ -36,7 +36,7 @@ const PermissionAddSubcommand = new Subcommand({
 
   await PermissionDao.insert(interaction.channelId, permissionType, roleId);
 
-  interaction.reply({
+  await interaction.reply({
     content: 'Permission added: "' + roleName + '" for "' + permissionType + '"',
     ephemeral: false,
   });

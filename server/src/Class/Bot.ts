@@ -56,12 +56,12 @@ class Bot {
         await command.run(interaction, interaction.options);
       } catch (error) {
         if (error instanceof ReplyError)
-          interaction.reply({
+          await interaction.reply({
             content: error.message,
             ephemeral: true,
           });
         else {
-          interaction.reply({
+          await interaction.reply({
             content: 'Unknown error occurred...',
             ephemeral: true,
           });

@@ -31,7 +31,7 @@ const SubListSubcommand = new Subcommand({
     }
   }
 
-  interaction.reply({
+  await interaction.reply({
     content: info,
     ephemeral: privateReply,
   });

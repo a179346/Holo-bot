@@ -25,7 +25,7 @@ const SubRemoveSubcommand = new Subcommand({
 
   await SubscriptionDao.remove(interaction.channelId, channelNicknameVal.channel.id);
 
-  interaction.reply({
+  await interaction.reply({
     content: 'Subscription removed: 【' + channelNicknameVal.channel.name + '】',
     ephemeral: false,
   });

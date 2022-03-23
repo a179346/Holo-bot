@@ -40,7 +40,7 @@ const PermissionGetSubcommand = new Subcommand({
       info += prefix + roleName;
   }
 
-  interaction.reply({
+  await interaction.reply({
     content: info,
     ephemeral: privateReply,
   });

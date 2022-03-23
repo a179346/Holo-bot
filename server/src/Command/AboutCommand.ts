@@ -20,7 +20,7 @@ export const AboutCommand = new Command({
   if (typeof privateReply !== 'boolean')
     throw new ReplyError('Invalid options: "private-reply"');
 
-  interaction.reply({
+  await interaction.reply({
     content: about,
     ephemeral: privateReply,
   });

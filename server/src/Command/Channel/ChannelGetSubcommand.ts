@@ -48,7 +48,7 @@ const ChannelGetSubcommand = new Subcommand({
   if (channelApiVal.data.video_count)
     info += prefix + 'Video count:  ' + channelApiVal.data.video_count.toLocaleString('en');
 
-  interaction.reply({
+  await interaction.reply({
     content: info,
     ephemeral: privateReply,
   });

@@ -36,7 +36,7 @@ const PermissionRemoveSubcommand = new Subcommand({
 
   await PermissionDao.remove(interaction.channelId, permissionType, roleId);
 
-  interaction.reply({
+  await interaction.reply({
     content: 'Permission removed: "' + roleName + '" for "' + permissionType + '"',
     ephemeral: false,
   });

@@ -56,9 +56,9 @@ const LiveListSubcommand = new Subcommand({
     };
     if (firstReply) {
       firstReply = false;
-      interaction.reply(msg);
+      await interaction.reply(msg);
     } else
-      interaction.followUp(msg);
+      await interaction.followUp(msg);
   }
 
   if (firstReply)

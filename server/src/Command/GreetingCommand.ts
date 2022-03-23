@@ -28,7 +28,7 @@ export const GreetingCommand = new Command({
   let content = prefix + channelNicknameVal.channel.greeting ;
   content += '            From: ' + interaction.user.toString();
 
-  interaction.reply({
+  await interaction.reply({
     content,
     ephemeral: false,
   });

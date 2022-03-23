@@ -25,7 +25,7 @@ const SubAddSubcommand = new Subcommand({
 
   await SubscriptionDao.insert(interaction.channelId, channelNicknameVal.channel.id);
 
-  interaction.reply({
+  await interaction.reply({
     content: 'Subscription added: 【' + channelNicknameVal.channel.name + '】',
     ephemeral: false,
   });
